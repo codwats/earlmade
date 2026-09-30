@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Web Awesome (UI components and design tokens) with Build Awesome (static site generator). Static output, with no server-side app. Deploy target not decided yet.
+Web Awesome (UI components and design tokens) with Build Awesome beta (static site generator, installed from npm as `@11ty/eleventy`). Static output, with no server-side app. Deploy target not decided yet.
 
 ## Users
 
