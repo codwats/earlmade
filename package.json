@@ -1,0 +1,28 @@
+{
+  "name": "earlmade",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "eleventy --serve",
+    "build": "eleventy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codwats/earlmade.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/codwats/earlmade/issues"
+  },
+  "homepage": "https://github.com/codwats/earlmade#readme",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6"
+  },
+  "dependencies": {
+    "@web.awesome.me/webawesome-pro": "^3.14.0"
+  },
+  "private": true
+}
