@@ -603,3 +603,37 @@ wa-page[view="mobile"] .toc {
 .inbox-title {
   word-break: break-word;
 }
+
+/* --- Links page (/links.html) -------------------------------------------- */
+
+.links-page {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--wa-color-surface-lowered);
+}
+.links-wrap {
+  box-sizing: border-box;
+  width: min(100%, 28rem);
+  margin-inline: auto;
+  padding: var(--wa-space-4xl) var(--wa-space-l);
+}
+.links-wordmark {
+  font-size: var(--wa-font-size-4xl);
+}
+.links-button {
+  width: 100%;
+}
+.links-button::part(base) {
+  justify-content: flex-start;
+}
+.links-button::part(label) {
+  flex: 1;
+  text-align: start;
+  white-space: normal;
+}
+.links-handle {
+  font-family: var(--wa-font-family-code);
+  font-size: var(--wa-font-size-xs);
+  font-weight: var(--wa-font-weight-body);
+  color: var(--wa-color-text-quiet);
+}

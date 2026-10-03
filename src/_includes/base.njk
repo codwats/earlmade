@@ -7,24 +7,7 @@
 <!doctype html>
 <html lang="en" class="wa-theme-awesome wa-palette-bright wa-light">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if title and page.url != "/" %}{{ title }} · {% endif %}{{ site.title }}</title>
-  <meta name="description" content="{{ description or site.description }}">
-  {%- if noindex %}<meta name="robots" content="noindex">{% endif %}
-  <script>
-    // Follow the system colour scheme before first paint.
-    if (matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.classList.replace("wa-light", "wa-dark");
-    }
-  </script>
-  <link rel="stylesheet" href="https://use.typekit.net/zxr3epd.css">
-  <link rel="stylesheet" href="/webawesome/styles/themes/awesome.css">
-  <link rel="stylesheet" href="/webawesome/styles/native.css">
-  <link rel="stylesheet" href="/webawesome/styles/utilities.css">
-  <link rel="stylesheet" href="/assets/site.css">
-  <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/feed.xml">
-  <script type="module" src="/webawesome/webawesome.loader.js"></script>
+  {% include "partials/head.njk" %}
 </head>
 <body>
   <wa-page mobile-breakpoint="768">
