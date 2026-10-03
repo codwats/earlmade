@@ -1,0 +1,52 @@
+---
+layout: base.njk
+---
+{%- from "partials/entry.njk" import meta -%}
+{%- set toc = content | toc -%}
+{%- set newer = collections.posts | getPreviousCollectionItem(page) -%}
+{%- set older = collections.posts | getNextCollectionItem(page) -%}
+<article class="page-wrap post wa-stack wa-gap-2xl">
+  <header class="post-header wa-stack wa-gap-l">
+    <p class="caption">
+      {%- if shelf %}Filed under <a href="/library/?shelf={{ shelf | urlencode }}">{{ shelf }}</a> on {% else %}Posted {% endif -%}
+      <time datetime="{{ page.date | isoDate }}">{{ page.date | readableDate }}</time>
+      {%- if updated %} · Last updated <time datetime="{{ updated | isoDate }}">{{ updated | readableDate }}</time>{% endif %}
+      · {{ content | readingTime }} min read
+    </p>
+    <h1 class="display">{{ title }}</h1>
+    {%- if description %}
+    <p class="lead">{{ description }}</p>
+    {%- endif %}
+    {%- if tags.length %}
+    <div class="wa-cluster wa-gap-2xs">
+      {%- for tag in tags %}
+      <a class="tag-link" href="/library/?tag={{ tag | urlencode }}"><wa-tag size="small">#{{ tag }}</wa-tag></a>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+  </header>
+
+  <div class="post-body">
+    <div class="prose">
+      {{ content | safe }}
+    </div>
+    {%- if toc.length > 1 %}
+    <nav class="toc wa-stack wa-gap-s" aria-labelledby="toc-heading">
+      <h2 id="toc-heading" class="toc-heading">On this page</h2>
+      <ol>
+        {%- for h in toc %}
+        <li><a href="#{{ h.id }}">{{ h.text }}</a></li>
+        {%- endfor %}
+      </ol>
+    </nav>
+    {%- endif %}
+  </div>
+
+  {%- if newer or older %}
+  <wa-divider></wa-divider>
+  <nav class="pager wa-split" aria-label="More posts">
+    {%- if older %}<a href="{{ older.url }}"><span class="caption">Older</span><span class="pager-title">{{ older.data.title }}</span></a>{% else %}<span></span>{% endif %}
+    {%- if newer %}<a href="{{ newer.url }}" class="pager-next"><span class="caption">Newer</span><span class="pager-title">{{ newer.data.title }}</span></a>{% endif %}
+  </nav>
+  {%- endif %}
+</article>

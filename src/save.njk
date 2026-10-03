@@ -1,0 +1,67 @@
+---
+layout: base.njk
+title: Save something
+permalink: /save/
+noindex: true
+eleventyExcludeFromCollections: true
+scripts: ["/assets/save.js"]
+---
+{#- Owner tool. The site is static, so saving opens GitHub's "new file" page
+    with the Markdown already filled in. Commit it and the next build has it. -#}
+<div class="page-wrap wa-stack wa-gap-2xl" data-save data-repo="{{ site.repo }}" data-branch="{{ site.branch }}">
+  <header class="wa-stack wa-gap-s">
+    <h1>Save something</h1>
+    <p class="lead">A link or a thought. No shelf, tags or title needed. It lands in the inbox and stays private until you publish it.</p>
+  </header>
+
+  <div class="save-cols">
+    <form class="save-form wa-stack wa-gap-l" data-save-form>
+      <wa-input name="input" label="Link or note" placeholder="Paste a link, or type a thought…" required autofocus></wa-input>
+      <wa-textarea name="note" label="Say something about it" hint="Optional. Why you kept it, in a line." rows="3" resize="auto"></wa-textarea>
+      <div class="wa-cluster wa-gap-m">
+        <wa-button type="submit" variant="brand">
+          <wa-icon slot="start" name="github" family="brands"></wa-icon>
+          Save to the repo
+        </wa-button>
+        <span class="caption">or press <kbd>⌘</kbd> <kbd>↵</kbd></span>
+      </div>
+    </form>
+
+    <section class="save-preview wa-stack wa-gap-s" aria-labelledby="preview-heading">
+      <div class="wa-split">
+        <h2 id="preview-heading" class="side-heading">What gets written</h2>
+        <wa-copy-button data-copy from="save-file" copy-label="Copy Markdown"></wa-copy-button>
+      </div>
+      <code class="file-path" data-path>src/content/…</code>
+      <pre class="file-preview"><code id="save-file" data-file>---
+status: inbox
+---</code></pre>
+      <p class="caption">One Markdown file. <code>status: inbox</code> means the build skips it.</p>
+    </section>
+  </div>
+
+  <section class="wa-stack wa-gap-m" aria-labelledby="ways-heading">
+    <h2 id="ways-heading">Ways in</h2>
+    <div class="wa-grid wa-gap-l ways">
+      <wa-card>
+        <div class="wa-stack wa-gap-xs">
+          <h3 class="way-title"><wa-icon name="bookmark"></wa-icon> Bookmarklet</h3>
+          <p>Drag this to your bookmarks bar. On any page, click it to open this form with the page's address and title filled in.</p>
+          <p><a class="bookmarklet" data-bookmarklet href="#">Save to earlmade</a></p>
+        </div>
+      </wa-card>
+      <wa-card>
+        <div class="wa-stack wa-gap-xs">
+          <h3 class="way-title"><wa-icon name="mobile-screen"></wa-icon> Share sheet</h3>
+          <p>Make an iOS Shortcut that opens <code>/save/?url=</code> plus the shared URL. It then shows up when you tap Share in Safari, Music or Books.</p>
+        </div>
+      </wa-card>
+      <wa-card>
+        <div class="wa-stack wa-gap-xs">
+          <h3 class="way-title"><wa-icon name="terminal"></wa-icon> Command line</h3>
+          <p>From the repo: <code>npm run save -- https://example.com "why I kept it"</code>. It writes the file and warns about duplicates.</p>
+        </div>
+      </wa-card>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,93 @@
+---
+layout: base.njk
+title: Library
+description: Every post, note and saved link in one place.
+scripts: ["/assets/library.js"]
+---
+{#- The full list is rendered as HTML, so the library works without JavaScript.
+    library.js adds search, filters, counts and sorting on top of it. -#}
+<div class="page-wrap wa-stack wa-gap-xl" data-library>
+  <header class="wa-stack wa-gap-s">
+    <h1>The library</h1>
+    <p class="lead">Every post, note and saved link in one place. Search, then narrow by kind, shelf or tag.</p>
+  </header>
+
+  <div class="library-controls wa-stack wa-gap-m" data-controls hidden>
+    <wa-input id="library-search" type="search" label="Search the library" placeholder="Search titles, notes, sites and tags…" with-clear autocomplete="off">
+      <wa-icon slot="start" name="magnifying-glass"></wa-icon>
+      <kbd slot="end" class="key-hint" aria-hidden="true">/</kbd>
+    </wa-input>
+
+    <wa-radio-group id="library-kind" orientation="horizontal" value="all" size="small">
+      <span slot="label" class="wa-visually-hidden">Kind</span>
+      <wa-radio appearance="button" value="all">All <span class="count" data-kind-count="all"></span></wa-radio>
+      <wa-radio appearance="button" value="post">Posts <span class="count" data-kind-count="post"></span></wa-radio>
+      <wa-radio appearance="button" value="note">Notes <span class="count" data-kind-count="note"></span></wa-radio>
+      <wa-radio appearance="button" value="link">Links <span class="count" data-kind-count="link"></span></wa-radio>
+    </wa-radio-group>
+
+    <div class="wa-cluster wa-gap-xs" role="group" aria-label="Shelves">
+      {%- for shelf in site.shelves %}
+      <wa-button size="small" pill appearance="outlined" data-shelf="{{ shelf }}" aria-pressed="false">{{ shelf }} <span class="count" data-shelf-count="{{ shelf }}"></span></wa-button>
+      {%- endfor %}
+    </div>
+
+    <div class="library-status wa-cluster wa-gap-s">
+      <p aria-live="polite" class="library-count"><strong data-shown>{{ collections.items.length }}</strong> of {{ collections.items.length }} shown</p>
+      <div class="wa-cluster wa-gap-2xs" data-active></div>
+      <wa-button size="small" appearance="plain" variant="brand" data-clear hidden>Clear all</wa-button>
+      <wa-select id="library-sort" size="small" value="new" label="Sort" class="library-sort">
+        <wa-option value="new">Newest first</wa-option>
+        <wa-option value="old">Oldest first</wa-option>
+        <wa-option value="az">Title A–Z</wa-option>
+      </wa-select>
+    </div>
+  </div>
+
+  <div class="library-empty wa-stack wa-gap-s" data-empty hidden>
+    <h2>Nothing matches yet</h2>
+    <p>Try fewer words, or clear the filters to see everything.</p>
+    <div><wa-button appearance="outlined" data-clear-empty>Clear filters</wa-button></div>
+  </div>
+
+  <ul class="library-rows" data-rows>
+    {%- for item in collections.items %}
+    {%- set d = item.data %}
+    {%- set text = item.content | plainText %}
+    <li class="library-row" data-item
+      data-kind="{{ d.kind }}"
+      data-shelf="{{ d.shelf or '' }}"
+      data-tags="{{ (d.tags or []) | join(' ') }}"
+      data-date="{{ item.date | isoDate }}"
+      data-title="{{ d.label or text | truncate(80) }}"
+      data-text="{{ [d.label, text, d.url | hostname, d.shelf, (d.tags or []) | join(' ')] | join(' ') | lower }}">
+      <span class="row-icon" aria-hidden="true">
+        <wa-icon name="{{ 'file-lines' if d.kind == 'post' else ('pen' if d.kind == 'note' else 'link') }}"></wa-icon>
+      </span>
+      <div class="row-main wa-stack wa-gap-2xs">
+        {%- if d.kind == "note" %}
+        <p class="row-note"><a href="{{ item.url }}">{{ text | truncate(200) }}</a></p>
+        {%- else %}
+        <h2 class="row-title"><a href="{{ item.url if d.kind == 'post' else d.url }}">{{ d.label }}</a></h2>
+          {%- if d.kind == "post" and d.description %}<p class="row-desc">{{ d.description }}</p>
+          {%- elif d.kind == "link" and text %}<p class="row-desc">{{ text | truncate(200) }}</p>{% endif %}
+        {%- endif %}
+        <p class="row-meta">
+          {%- if d.kind == "link" %}<span class="domain">{{ d.url | hostname }}</span> · {% endif -%}
+          {{ "Post" if d.kind == "post" else ("Note" if d.kind == "note" else "Link") }} · <time datetime="{{ item.date | isoDate }}">{{ item.date | readableDate }}</time>
+        </p>
+      </div>
+      <div class="row-side wa-cluster wa-gap-2xs">
+        {%- for tag in d.tags %}
+        <a class="tag-link" href="/library/?tag={{ tag | urlencode }}" data-tag-link="{{ tag }}"><wa-tag size="small">#{{ tag }}</wa-tag></a>
+        {%- endfor %}
+        {%- if d.shelf %}
+        <a class="tag-link" href="/library/?shelf={{ d.shelf | urlencode }}" data-shelf-link="{{ d.shelf }}"><wa-tag size="small" variant="brand">{{ d.shelf }}</wa-tag></a>
+        {%- else %}
+        <span class="unsorted">No shelf</span>
+        {%- endif %}
+      </div>
+    </li>
+    {%- endfor %}
+  </ul>
+</div>

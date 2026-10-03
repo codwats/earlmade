@@ -1,0 +1,48 @@
+{#- One item in the stream. Short things are drawn short: a note has no
+    headline, and a link never pretends to be an article. -#}
+
+{% macro meta(item) %}
+{%- set d = item.data -%}
+{%- if d.shelf or d.tags.length %}
+<div class="entry-meta wa-cluster wa-gap-2xs">
+  {%- if d.shelf %}
+  <a class="tag-link" href="/library/?shelf={{ d.shelf | urlencode }}"><wa-tag size="small" variant="brand">{{ d.shelf }}</wa-tag></a>
+  {%- endif %}
+  {%- for tag in d.tags %}
+  <a class="tag-link" href="/library/?tag={{ tag | urlencode }}"><wa-tag size="small">#{{ tag }}</wa-tag></a>
+  {%- endfor %}
+</div>
+{%- endif %}
+{% endmacro %}
+
+{% macro entry(item) %}
+{%- set d = item.data -%}
+{%- if d.kind == "post" %}
+<article class="entry entry-post wa-stack wa-gap-s">
+  <p class="entry-kind"><wa-icon name="file-lines"></wa-icon>Post · {{ item.content | readingTime }} min read</p>
+  <h3 class="entry-post-title"><a href="{{ item.url }}">{{ d.title }}</a></h3>
+  {%- if d.description %}
+  <p class="entry-dek">{{ d.description }}</p>
+  {%- endif %}
+  {{ meta(item) }}
+</article>
+{%- elif d.kind == "note" %}
+<article class="entry entry-note wa-stack wa-gap-xs">
+  <div class="entry-note-text">{{ item.content | safe }}</div>
+  <p class="entry-kind"><wa-icon name="pen"></wa-icon><a href="{{ item.url }}">Note</a></p>
+  {{ meta(item) }}
+</article>
+{%- else %}
+<article class="entry entry-link wa-stack wa-gap-xs">
+  <p class="entry-kind"><wa-icon name="link"></wa-icon>Link</p>
+  <h3 class="entry-link-title">
+    <a href="{{ d.url }}">{{ d.label }}<wa-icon name="arrow-up-right-from-square" label="(opens the linked site)"></wa-icon></a>
+    <span class="domain">{{ d.url | hostname }}</span>
+  </h3>
+  {%- if item.content | trim %}
+  <div class="entry-comment">{{ item.content | safe }}</div>
+  {%- endif %}
+  {{ meta(item) }}
+</article>
+{%- endif %}
+{% endmacro %}

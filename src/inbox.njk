@@ -1,0 +1,35 @@
+---
+layout: base.njk
+title: Inbox
+noindex: true
+eleventyExcludeFromCollections: true
+---
+{#- Only exists while running `npm start` (see inbox.11tydata.js). Never built for the public site. -#}
+<div class="page-wrap wa-stack wa-gap-xl">
+  <header class="wa-stack wa-gap-s">
+    <wa-tag size="small" class="owner-tag"><wa-icon name="lock"></wa-icon> Only you see this, and only while running <code>npm start</code></wa-tag>
+    <h1>Inbox</h1>
+    <p class="lead">{{ collections.unpublished.length }} item{{ "" if collections.unpublished.length == 1 else "s" }} waiting. To publish one, change <code>status: inbox</code> to <code>status: public</code> in its file. Shelves and tags are optional.</p>
+    <div><wa-button href="/save/" variant="brand"><wa-icon slot="start" name="plus"></wa-icon>Save something</wa-button></div>
+  </header>
+
+  <ul class="inbox-list">
+    {%- for item in collections.unpublished %}
+    {%- set d = item.data %}
+    <li class="inbox-row">
+      <div class="wa-stack wa-gap-2xs inbox-main">
+        <strong class="inbox-title">{{ d.label or (item.content | plainText | truncate(100)) or "(empty)" }}</strong>
+        {%- if d.url %}<a class="domain" href="{{ d.url }}">{{ d.url }}</a>{% endif %}
+        <code class="file-path">{{ item.inputPath | replace("./", "") }}</code>
+      </div>
+      <div class="wa-cluster wa-gap-2xs">
+        <wa-tag size="small">{{ d.kind }}</wa-tag>
+        <wa-tag size="small" variant="{{ 'warning' if d.status == 'private' else 'neutral' }}"><wa-icon name="lock"></wa-icon> {{ d.status }}</wa-tag>
+        {%- if d.shelf %}<wa-tag size="small" variant="brand">{{ d.shelf }}</wa-tag>{% endif %}
+      </div>
+    </li>
+    {%- else %}
+    <li class="inbox-row">Inbox zero. Everything saved is published.</li>
+    {%- endfor %}
+  </ul>
+</div>

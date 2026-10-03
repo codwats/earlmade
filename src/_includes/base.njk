@@ -1,29 +1,78 @@
+{%- set nav = [
+  { url: "/", label: "Home" },
+  { url: "/library/", label: "Library" },
+  { url: "/writing/", label: "Writing" },
+  { url: "/about/", label: "About" }
+] -%}
 <!doctype html>
-<html lang="en">
+<html lang="en" class="wa-theme-awesome wa-palette-bright wa-light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title }}</title>
-  <link rel="stylesheet" href="/webawesome/styles/webawesome.css">
+  <title>{% if title and page.url != "/" %}{{ title }} · {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{{ description or site.description }}">
+  {%- if noindex %}<meta name="robots" content="noindex">{% endif %}
+  <script>
+    // Follow the system colour scheme before first paint.
+    if (matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.classList.replace("wa-light", "wa-dark");
+    }
+  </script>
+  <link rel="stylesheet" href="https://use.typekit.net/zxr3epd.css">
+  <link rel="stylesheet" href="/webawesome/styles/themes/awesome.css">
+  <link rel="stylesheet" href="/webawesome/styles/native.css">
+  <link rel="stylesheet" href="/webawesome/styles/utilities.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="/feed.xml">
   <script type="module" src="/webawesome/webawesome.loader.js"></script>
-  <style>
-    @font-face {
-      font-family: "Maple Mono";
-      src: url("/fonts/MapleMono[wght]-VF.woff2") format("woff2");
-      font-weight: 100 800;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: "Maple Mono";
-      src: url("/fonts/MapleMono-Italic[wght]-VF.woff2") format("woff2");
-      font-weight: 100 800;
-      font-style: italic;
-      font-display: swap;
-    }
-    :root { --wa-font-family-code: "Maple Mono", ui-monospace, monospace; }
-  </style>
 </head>
 <body>
-  {{ content | safe }}
+  <wa-page mobile-breakpoint="768">
+    <header slot="header" class="mobile-header wa-split">
+      <a class="wordmark" href="/">earlmade</a>
+      <wa-button data-toggle-nav appearance="plain">
+        <wa-icon name="bars" label="Open menu"></wa-icon>
+      </wa-button>
+    </header>
+
+    <div slot="navigation-header" class="nav-header">
+      <a class="wordmark" href="/">earlmade</a>
+    </div>
+
+    <nav slot="navigation" class="site-nav wa-stack wa-gap-2xs" aria-label="Site">
+      {%- for item in nav %}
+      <a href="{{ item.url }}" data-drawer="close"
+        {%- if page.url == item.url or (page.url and item.url != "/" and page.url.startsWith(item.url)) %} aria-current="page"{% endif %}>{{ item.label }}</a>
+      {%- endfor %}
+    </nav>
+
+    <div slot="navigation-footer" class="wa-cluster wa-gap-2xs">
+      <wa-button href="/library/" appearance="plain" size="small">
+        <wa-icon name="magnifying-glass" label="Search the library"></wa-icon>
+      </wa-button>
+      <wa-button href="/feed.xml" appearance="plain" size="small">
+        <wa-icon name="rss" label="Feed"></wa-icon>
+      </wa-button>
+    </div>
+
+    <main id="main">
+      {{ content | safe }}
+    </main>
+
+    <footer slot="footer" class="site-footer wa-split">
+      <div class="wa-stack wa-gap-2xs">
+        <span class="wordmark">earlmade</span>
+        <small>Built with Build Awesome and Web Awesome. Every item here is a Markdown file.</small>
+      </div>
+      <nav class="wa-cluster wa-gap-l" aria-label="Footer">
+        <a href="/feed.xml">Feed</a>
+        <a href="/library/">Library</a>
+        <a href="/about/">About</a>
+      </nav>
+    </footer>
+  </wa-page>
+  {%- for src in scripts %}
+  <script type="module" src="{{ src }}"></script>
+  {%- endfor %}
 </body>
 </html>

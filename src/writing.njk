@@ -1,0 +1,23 @@
+---
+layout: base.njk
+title: Writing
+permalink: /writing/
+description: Longer posts, newest first.
+---
+<div class="page-wrap wa-stack wa-gap-2xl">
+  <header class="wa-stack wa-gap-s">
+    <h1>Writing</h1>
+    <p class="lead">Longer posts, newest first. Notes and links live in the <a href="/library/">library</a>.</p>
+  </header>
+  <ol class="post-list wa-stack wa-gap-xl">
+    {%- for post in collections.posts %}
+    <li class="wa-stack wa-gap-2xs">
+      <p class="caption"><time datetime="{{ post.date | isoDate }}">{{ post.date | readableDate }}</time>{% if post.data.shelf %} · {{ post.data.shelf }}{% endif %}</p>
+      <h2 class="post-list-title"><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
+      {%- if post.data.description %}<p>{{ post.data.description }}</p>{% endif %}
+    </li>
+    {%- else %}
+    <li>No posts yet.</li>
+    {%- endfor %}
+  </ol>
+</div>
