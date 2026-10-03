@@ -1,10 +1,11 @@
 {
   "name": "earlmade",
   "version": "1.0.0",
-  "description": "",
+  "description": "earlmade: a personal blog that doubles as a searchable shelf of saved links.",
   "scripts": {
     "start": "eleventy --serve",
-    "build": "eleventy"
+    "build": "eleventy",
+    "save": "node scripts/save.js"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,19 @@
+---
+layout: base.njk
+---
+<article class="page-wrap note-page wa-stack wa-gap-l">
+  <div class="note-page-text">
+    {{ content | safe }}
+  </div>
+  <p class="caption"><wa-icon name="pen"></wa-icon> Note · <time datetime="{{ page.date | isoDate }}">{{ page.date | readableDate }}</time>
+    {%- if shelf %} · <a href="/library/?shelf={{ shelf | urlencode }}">{{ shelf }}</a>{% endif %}
+  </p>
+  {%- if tags.length %}
+  <div class="wa-cluster wa-gap-2xs">
+    {%- for tag in tags %}
+    <a class="tag-link" href="/library/?tag={{ tag | urlencode }}"><wa-tag size="small">#{{ tag }}</wa-tag></a>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+  <p><a href="/">← Back to everything</a></p>
+</article>

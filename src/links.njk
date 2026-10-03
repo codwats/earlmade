@@ -1,0 +1,45 @@
+---
+title: Links
+description: earlmade on YouTube, TikTok and Instagram.
+permalink: /links.html
+eleventyExcludeFromCollections: true
+---
+{#- A one-screen "link in bio" page. Standalone on purpose: no sidebar, just the links.
+    Edit the list in src/_data/site.js (socials). -#}
+<!doctype html>
+<html lang="en" class="wa-theme-awesome wa-palette-bright wa-light">
+<head>
+  {% include "partials/head.njk" %}
+</head>
+<body class="links-page">
+  <main class="links-wrap wa-stack wa-gap-2xl">
+    <header class="wa-stack wa-gap-xs wa-align-items-center">
+      <h1 class="wordmark links-wordmark">earlmade</h1>
+      <p class="caption">@earlmade on YouTube, TikTok and Instagram</p>
+    </header>
+
+    <nav class="wa-stack wa-gap-m" aria-label="Social profiles">
+      {%- for s in site.socials %}
+      <wa-button href="{{ s.url }}" size="large" appearance="filled-outlined" class="links-button" rel="me noopener" target="_blank">
+        <wa-icon slot="start" name="{{ s.icon }}" family="brands"></wa-icon>
+        {{ s.label }}
+        <span slot="end" class="links-handle">{{ s.handle }}</span>
+      </wa-button>
+      {%- endfor %}
+    </nav>
+
+    <wa-divider></wa-divider>
+
+    <nav class="wa-stack wa-gap-s" aria-label="On this site">
+      <wa-button href="/" appearance="plain" class="links-button">
+        <wa-icon slot="start" name="house"></wa-icon>
+        The blog
+      </wa-button>
+      <wa-button href="/library/" appearance="plain" class="links-button">
+        <wa-icon slot="start" name="magnifying-glass"></wa-icon>
+        The library
+      </wa-button>
+    </nav>
+  </main>
+</body>
+</html>

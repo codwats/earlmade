@@ -1,0 +1,68 @@
+---
+layout: base.njk
+title: Home
+---
+{%- from "partials/entry.njk" import entry -%}
+<div class="page-wrap wa-stack wa-gap-3xl">
+  <section class="hero wa-stack wa-gap-l">
+    <h1 class="display">Notes on things <em>worth keeping</em></h1>
+    <p class="lead">{{ site.description }}</p>
+    <form class="hero-search wa-cluster wa-gap-s" action="/library/" method="get" role="search">
+      <wa-input name="q" type="search" placeholder="Find a post, note or link…" label="Search the library" class="hero-search-input">
+        <wa-icon slot="start" name="magnifying-glass"></wa-icon>
+      </wa-input>
+      <wa-button type="submit" variant="brand">Search</wa-button>
+    </form>
+    <nav class="wa-cluster wa-gap-xs" aria-label="Shelves">
+      {%- for shelf in site.shelves %}
+      <wa-button href="/library/?shelf={{ shelf | urlencode }}" size="small" appearance="outlined" pill>{{ shelf }}</wa-button>
+      {%- endfor %}
+    </nav>
+  </section>
+
+  <div class="home-cols">
+    <section class="stream wa-stack wa-gap-2xl" aria-labelledby="latest-heading">
+      <h2 id="latest-heading" class="wa-visually-hidden">Latest</h2>
+      {%- for day in collections.items.slice(0, 40) | groupByDay %}
+      <section class="day wa-stack wa-gap-xl" aria-label="{{ day.date | dayHeading }}">
+        <p class="day-heading"><time datetime="{{ day.key }}">{{ day.date | dayHeading }}</time></p>
+        {%- for item in day.items %}
+        {{ entry(item) }}
+        {%- endfor %}
+      </section>
+      {%- else %}
+      <wa-callout variant="neutral">
+        <wa-icon slot="icon" name="seedling"></wa-icon>
+        Nothing is public yet. Set <code>status: public</code> on an item in <code>src/content/</code> to show it here.
+      </wa-callout>
+      {%- endfor %}
+      {%- if collections.items.length > 40 %}
+      <a href="/library/" class="more-link">Everything, newest first →</a>
+      {%- endif %}
+    </section>
+
+    <aside class="home-side wa-stack wa-gap-2xl">
+      {%- if collections.startHere.length %}
+      <section class="wa-stack wa-gap-s" aria-labelledby="start-heading">
+        <h2 id="start-heading" class="side-heading">Start here</h2>
+        <ol class="start-list">
+          {%- for item in collections.startHere %}
+          <li><a href="{{ item.url or item.data.url }}">{{ item.data.label or (item.content | plainText | truncate(60)) }}</a></li>
+          {%- endfor %}
+        </ol>
+      </section>
+      {%- endif %}
+      {%- set tagList = collections.items | tagCounts %}
+      {%- if tagList.length %}
+      <section class="wa-stack wa-gap-s" aria-labelledby="tags-heading">
+        <h2 id="tags-heading" class="side-heading">Tags</h2>
+        <div class="wa-cluster wa-gap-2xs">
+          {%- for t in tagList.slice(0, 20) %}
+          <a class="tag-link" href="/library/?tag={{ t.tag | urlencode }}"><wa-tag size="small">#{{ t.tag }} <span class="count">{{ t.count }}</span></wa-tag></a>
+          {%- endfor %}
+        </div>
+      </section>
+      {%- endif %}
+    </aside>
+  </div>
+</div>
