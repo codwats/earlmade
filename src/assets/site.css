@@ -81,7 +81,7 @@
   --wa-color-danger-95: #ffeae7;
 
   --wa-font-family-heading: "P22 Mackinac Pro", p22-mackinac-pro, Georgia, serif;
-  --wa-font-family-body: "Halyard Micro", halyard-micro, system-ui, sans-serif;
+  --wa-font-family-body: halyard-micro-variable, system-ui, sans-serif;
   /* Article text goes through this one token so it can be swapped (Maple Mono is being tested). */
   --wa-font-family-longform: var(--wa-font-family-body);
   --wa-font-family-code: "Maple Mono", ui-monospace, monospace;
