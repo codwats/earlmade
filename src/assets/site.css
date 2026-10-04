@@ -384,7 +384,7 @@ wa-button .count {
   font-family: var(--wa-font-family-heading);
   font-size: var(--wa-font-size-xl);
   line-height: 1;
-  color: var(--wa-color-brand-60);
+  color: var(--wa-color-text-link);
 }
 
 /* --- Library ------------------------------------------------------------- */
