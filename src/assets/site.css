@@ -155,6 +155,7 @@ main {
 }
 
 .page-wrap {
+  container-type: inline-size;
   max-width: 68rem;
   padding: var(--wa-space-3xl) var(--wa-space-2xl) var(--wa-space-4xl);
 }
@@ -251,21 +252,33 @@ wa-button .count {
   clip: rect(0 0 0 0);
 }
 
+/* Narrow: one column, with "Start here" above the stream and tags below it.
+   Wide: the sidebar sits beside the stream. One query decides both. */
 .home-cols {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--wa-space-4xl);
-  align-items: flex-start;
+  display: grid;
+  gap: var(--wa-space-3xl);
 }
 .stream {
-  flex: 999 1 30rem;
   min-width: 0;
 }
 .home-side {
-  flex: 1 1 15rem;
-  padding: var(--wa-space-xl);
-  border-radius: var(--wa-border-radius-l);
-  background: var(--wa-color-surface-lowered);
+  display: contents;
+}
+.side-start {
+  order: -1;
+}
+@container (min-width: 48rem) {
+  .home-cols {
+    grid-template-columns: minmax(0, 1fr) 15rem;
+    gap: var(--wa-space-4xl);
+    align-items: start;
+  }
+  .home-side {
+    display: flex;
+    padding: var(--wa-space-xl);
+    border-radius: var(--wa-border-radius-l);
+    background: var(--wa-color-surface-lowered);
+  }
 }
 
 .day-heading {
@@ -288,6 +301,12 @@ wa-button .count {
   align-items: center;
   gap: var(--wa-space-xs);
   margin: 0;
+}
+/* Pads the small "Note" link up to the 24px minimum tap target (WCAG 2.5.8). */
+.entry-kind a {
+  display: inline-block;
+  min-height: 24px;
+  padding-block: var(--wa-space-2xs);
 }
 
 .entry-post-title {
