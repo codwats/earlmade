@@ -15,7 +15,7 @@ title: Home
     </form>
     <nav class="wa-cluster wa-gap-xs" aria-label="Shelves">
       {%- for shelf in site.shelves %}
-      <wa-button href="/library/?shelf={{ shelf | urlencode }}" size="small" appearance="outlined" pill>{{ shelf }}</wa-button>
+      <wa-button href="/library/?shelf={{ shelf | urlencode }}" size="s" appearance="outlined" pill>{{ shelf }}</wa-button>
       {%- endfor %}
     </nav>
   </section>
@@ -58,7 +58,7 @@ title: Home
         <h2 id="tags-heading" class="side-heading">Tags</h2>
         <div class="wa-cluster wa-gap-2xs">
           {%- for t in tagList.slice(0, 20) %}
-          <a class="tag-link" href="/library/?tag={{ t.tag | urlencode }}"><wa-tag size="small">#{{ t.tag }} <span class="count">{{ t.count }}</span></wa-tag></a>
+          <a class="tag-link" href="/library/?tag={{ t.tag | urlencode }}"><wa-tag size="s">#{{ t.tag }} <span class="count">{{ t.count }}</span></wa-tag></a>
           {%- endfor %}
         </div>
       </section>

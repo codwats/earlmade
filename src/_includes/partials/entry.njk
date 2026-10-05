@@ -6,10 +6,10 @@
 {%- if d.shelf or d.tags.length %}
 <div class="entry-meta wa-cluster wa-gap-2xs">
   {%- if d.shelf %}
-  <a class="tag-link" href="/library/?shelf={{ d.shelf | urlencode }}"><wa-tag size="small" variant="brand">{{ d.shelf }}</wa-tag></a>
+  <a class="tag-link" href="/library/?shelf={{ d.shelf | urlencode }}"><wa-tag size="s" variant="brand">{{ d.shelf }}</wa-tag></a>
   {%- endif %}
   {%- for tag in d.tags %}
-  <a class="tag-link" href="/library/?tag={{ tag | urlencode }}"><wa-tag size="small">#{{ tag }}</wa-tag></a>
+  <a class="tag-link" href="/library/?tag={{ tag | urlencode }}"><wa-tag size="s">#{{ tag }}</wa-tag></a>
   {%- endfor %}
 </div>
 {%- endif %}

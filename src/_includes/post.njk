@@ -20,7 +20,7 @@ layout: base.njk
     {%- if tags.length %}
     <div class="wa-cluster wa-gap-2xs">
       {%- for tag in tags %}
-      <a class="tag-link" href="/library/?tag={{ tag | urlencode }}"><wa-tag size="small">#{{ tag }}</wa-tag></a>
+      <a class="tag-link" href="/library/?tag={{ tag | urlencode }}"><wa-tag size="s">#{{ tag }}</wa-tag></a>
       {%- endfor %}
     </div>
     {%- endif %}
