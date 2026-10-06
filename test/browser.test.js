@@ -163,9 +163,14 @@ browserTest("with reduced motion, a row shelf-tag click jumps to the top of the 
     await tag.scrollIntoViewIfNeeded();
     await tag.click();
     // No waiting: an instant jump has already landed; a smooth scroll would still be moving.
+    const scrollNow = await page.evaluate(() => window.scrollY);
     const top = await page.evaluate(() => document.querySelector("[data-library]").getBoundingClientRect().top);
     // The filtered page may be too short to put the library flush with the top, so check it's in view.
     assert.ok(top >= -1 && top < 400, `library top is ${top}px from the viewport top`);
+    // A smooth scroll caught partway would still move; an instant jump has already settled.
+    await page.waitForTimeout(500);
+    const scrollLater = await page.evaluate(() => window.scrollY);
+    assert.equal(scrollNow, scrollLater, `scroll moved from ${scrollNow} to ${scrollLater} after the click`);
   } finally {
     await page.close();
   }
