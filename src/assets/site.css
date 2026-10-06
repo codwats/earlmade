@@ -739,7 +739,8 @@ wa-page[view="mobile"] .toc {
   position: fixed;
   right: 0;
   bottom: 0;
-  width: min(160vw, 80rem);
+  /* Capped by height too, so on wide, short screens the peaks stay below the links. */
+  width: min(160vw, 80rem, 85vh);
   aspect-ratio: 1233 / 659;
   /* Bleeds off the bottom-right corner; tune these to show more or less. */
   translate: 25% 20%;
