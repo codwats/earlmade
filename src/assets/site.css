@@ -85,6 +85,10 @@
   --wa-color-danger-90: #ffd7d3;
   --wa-color-danger-95: #ffeae7;
 
+  /* Rusty orange highlight: bright and dark. */
+  --color-highlight-bright: #da472b;
+  --color-highlight-dark: #9f4837;
+
   --wa-font-family-heading: "P22 Mackinac Pro", p22-mackinac-pro, Georgia, serif;
   --wa-font-family-body: halyard-micro-variable, system-ui, sans-serif;
   /* Article text goes through this one token so it can be swapped (Maple Mono is being tested). */
@@ -169,8 +173,10 @@ wa-page[view="mobile"] .page-wrap {
 }
 
 .site-footer {
+  position: relative;
+  overflow: clip; /* the valley falls off the edge instead of growing the page */
   padding: var(--wa-space-2xl);
-  background: var(--wa-color-brand-10);
+  background: var(--color-highlight-dark);
   color: var(--wa-color-neutral-95);
 }
 .site-footer .wordmark {
@@ -178,6 +184,28 @@ wa-page[view="mobile"] .page-wrap {
 }
 .site-footer a {
   color: var(--wa-color-brand-90);
+}
+.site-footer > * {
+  position: relative; /* above the valley */
+}
+.site-footer::after {
+  /* Small valley on the far right, in the bright rust. */
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 8rem;
+  aspect-ratio: 1233 / 659;
+  translate: 25% 20%;
+  background: var(--color-highlight-bright);
+  mask: url("/assets/valley.svg") no-repeat right bottom / contain;
+  pointer-events: none;
+}
+.site-footer nav {
+  margin-inline-end: 9.5rem; /* clear of the valley */
+}
+.footer-earl {
+  font-family: var(--wa-font-family-heading);
 }
 
 /* --- Type ---------------------------------------------------------------- */
@@ -632,11 +660,33 @@ wa-page[view="mobile"] .toc {
   margin: 0;
   background: var(--wa-color-surface-lowered);
 }
+.links-page::before {
+  /* Valley art, tinted to the text colour so it shows in light and dark. */
+  content: "";
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: min(160vw, 80rem);
+  aspect-ratio: 1233 / 659;
+  /* Bleeds off the bottom-right corner; tune these to show more or less. */
+  translate: 25% 20%;
+  background: var(--wa-color-neutral-05);
+  mask: url("/assets/valley.svg") no-repeat right bottom / contain;
+  pointer-events: none;
+}
 .links-wrap {
+  position: relative;
   box-sizing: border-box;
   width: min(100%, 28rem);
   margin-inline: auto;
   padding: var(--wa-space-4xl) var(--wa-space-l);
+}
+.links-page wa-divider {
+  --color: var(--color-highlight-bright);
+}
+.links-head {
+  width: 6rem;
+  height: auto;
 }
 .links-wordmark {
   font-size: var(--wa-font-size-4xl);
