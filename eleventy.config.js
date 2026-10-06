@@ -15,6 +15,8 @@ export default function (eleventyConfig) {
     "node_modules/@web.awesome.me/webawesome-pro/dist-cdn": "webawesome",
     woff2: "fonts",
     "src/assets": "assets",
+    "src/favicon.ico": "favicon.ico",
+    "src/apple-touch-icon.png": "apple-touch-icon.png",
   });
 
   // Adds id="…" to headings so posts get linkable sections and a table of contents.
