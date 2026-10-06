@@ -688,8 +688,7 @@ wa-page[view="mobile"] .toc {
   background: var(--wa-color-surface-lowered);
 }
 .links-page::before {
-  /* Valley art in the text colour, so it shows in light and dark. Light mode keeps
-     its original near-black, a shade deeper than the light text colour. */
+  /* Valley art in the text colour, softened, so it sits back in light and dark. */
   content: "";
   position: fixed;
   right: 0;
@@ -698,7 +697,8 @@ wa-page[view="mobile"] .toc {
   aspect-ratio: 1233 / 659;
   /* Bleeds off the bottom-right corner; tune these to show more or less. */
   translate: 25% 20%;
-  background: light-dark(var(--wa-color-neutral-05), var(--wa-color-text-normal));
+  background: var(--wa-color-text-normal);
+  opacity: 0.3;
   mask: url("/assets/valley.svg") no-repeat right bottom / contain;
   pointer-events: none;
 }
