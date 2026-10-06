@@ -5,7 +5,8 @@
   "scripts": {
     "start": "eleventy --serve",
     "build": "eleventy",
-    "save": "node scripts/save.js"
+    "save": "node scripts/save.js",
+    "test": "node --test --test-isolation=none 'test/*.test.js'"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,8 @@
   },
   "homepage": "https://github.com/codwats/earlmade#readme",
   "devDependencies": {
-    "@11ty/eleventy": "^3.1.6"
+    "@11ty/eleventy": "^3.1.6",
+    "playwright-core": "^1.63.0"
   },
   "dependencies": {
     "@web.awesome.me/webawesome-pro": "^3.14.0"
