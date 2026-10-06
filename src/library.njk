@@ -12,31 +12,36 @@ scripts: ["/assets/library.js"]
     <p class="lead">Every post, note and saved link in one place. Search, then narrow by kind, shelf or tag.</p>
   </header>
 
-  <div class="library-controls wa-stack wa-gap-m" data-controls hidden>
-    <wa-input id="library-search" type="search" label="Search the library" placeholder="Search titles, notes, sites and tags…" with-clear autocomplete="off">
-      <wa-icon slot="start" name="magnifying-glass"></wa-icon>
-      <kbd slot="end" class="key-hint" aria-hidden="true">/</kbd>
-    </wa-input>
+  {#- The count sits outside the hidden controls, so its live region is exposed from page load. #}
+  <div class="wa-stack wa-gap-m">
+    <div class="library-controls wa-stack wa-gap-m" data-controls hidden>
+      <wa-input id="library-search" type="search" label="Search the library" placeholder="Search titles, notes, sites and tags…" with-clear autocomplete="off">
+        <wa-icon slot="start" name="magnifying-glass"></wa-icon>
+        <kbd slot="end" class="key-hint" aria-hidden="true">/</kbd>
+      </wa-input>
 
-    <wa-radio-group id="library-kind" orientation="horizontal" value="all" size="s">
-      <span slot="label" class="wa-visually-hidden">Kind</span>
-      <wa-radio appearance="button" value="all">All <span class="count" data-kind-count="all"></span></wa-radio>
-      <wa-radio appearance="button" value="post">Posts <span class="count" data-kind-count="post"></span></wa-radio>
-      <wa-radio appearance="button" value="note">Notes <span class="count" data-kind-count="note"></span></wa-radio>
-      <wa-radio appearance="button" value="link">Links <span class="count" data-kind-count="link"></span></wa-radio>
-    </wa-radio-group>
+      <wa-radio-group id="library-kind" orientation="horizontal" value="all" size="s">
+        <span slot="label" class="wa-visually-hidden">Kind</span>
+        <wa-radio appearance="button" value="all">All <span class="count" data-kind-count="all"></span></wa-radio>
+        <wa-radio appearance="button" value="post">Posts <span class="count" data-kind-count="post"></span></wa-radio>
+        <wa-radio appearance="button" value="note">Notes <span class="count" data-kind-count="note"></span></wa-radio>
+        <wa-radio appearance="button" value="link">Links <span class="count" data-kind-count="link"></span></wa-radio>
+      </wa-radio-group>
 
-    <div class="wa-cluster wa-gap-xs" role="group" aria-label="Shelves">
-      {%- for shelf in site.shelves %}
-      <wa-button size="s" pill appearance="outlined" data-shelf="{{ shelf }}" aria-pressed="false">{{ shelf }} <span class="count" data-shelf-count="{{ shelf }}"></span></wa-button>
-      {%- endfor %}
+      <wa-radio-group id="library-shelf" orientation="horizontal" value="" size="s">
+        <span slot="label" class="wa-visually-hidden">Shelf</span>
+        <wa-radio appearance="button" value="">Any shelf <span class="count" data-shelf-count=""></span></wa-radio>
+        {%- for shelf in site.shelves %}
+        <wa-radio appearance="button" value="{{ shelf }}">{{ shelf }} <span class="count" data-shelf-count="{{ shelf }}"></span></wa-radio>
+        {%- endfor %}
+      </wa-radio-group>
     </div>
 
     <div class="library-status wa-cluster wa-gap-s">
       <p aria-live="polite" class="library-count"><strong data-shown>{{ collections.items.length }}</strong> of {{ collections.items.length }} shown</p>
       <div class="wa-cluster wa-gap-2xs" data-active></div>
       <wa-button size="s" appearance="plain" variant="brand" data-clear hidden>Clear all</wa-button>
-      <wa-select id="library-sort" size="s" value="new" label="Sort" class="library-sort">
+      <wa-select id="library-sort" size="s" value="new" label="Sort" class="library-sort" data-controls hidden>
         <wa-option value="new">Newest first</wa-option>
         <wa-option value="old">Oldest first</wa-option>
         <wa-option value="az">Title A–Z</wa-option>

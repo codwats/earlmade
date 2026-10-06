@@ -3,6 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync } from "node:fs";
 import { build, FIXTURE } from "./site.js";
+import site from "../src/_data/site.js";
 
 // Every built HTML page (Web Awesome's own files aside), relative to the output directory.
 const htmlPages = (outDir) =>
@@ -54,4 +55,20 @@ test("build warns about an item on an unknown shelf, naming the file and shelf",
   const warning = log.split("\n").find((line) => line.includes("[earlmade]") && line.includes(FIXTURE.shelf));
   assert.ok(warning, "no [earlmade] warning for the unknown shelf");
   assert.ok(warning.includes(FIXTURE.path), `warning doesn't name ${FIXTURE.path}: ${warning}`);
+});
+
+test("library shelf filter is a radio group with Any shelf first, then every shelf", async () => {
+  const { read } = await build();
+  const html = read("library/index.html");
+  const group = html.match(/<wa-radio-group id="library-shelf"[\s\S]*?<\/wa-radio-group>/);
+  assert.ok(group, "no shelf radio group on the library page");
+  assert.match(group[0], /<span slot="label" class="wa-visually-hidden">Shelf<\/span>/);
+  const values = [...group[0].matchAll(/<wa-radio appearance="button" value="([^"]*)">([^<]*)/g)].map((m) => [m[1], m[2].trim()]);
+  assert.deepEqual(values[0], ["", "Any shelf"]);
+  assert.deepEqual(values.slice(1), site.shelves.map((shelf) => [shelf, shelf]));
+});
+
+test("library page has no aria-pressed anywhere", async () => {
+  const { read } = await build();
+  assert.doesNotMatch(read("library/index.html"), /aria-pressed/);
 });
