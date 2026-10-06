@@ -18,7 +18,7 @@ scripts: ["/assets/library.js"]
       <kbd slot="end" class="key-hint" aria-hidden="true">/</kbd>
     </wa-input>
 
-    <wa-radio-group id="library-kind" orientation="horizontal" value="all" size="small">
+    <wa-radio-group id="library-kind" orientation="horizontal" value="all" size="s">
       <span slot="label" class="wa-visually-hidden">Kind</span>
       <wa-radio appearance="button" value="all">All <span class="count" data-kind-count="all"></span></wa-radio>
       <wa-radio appearance="button" value="post">Posts <span class="count" data-kind-count="post"></span></wa-radio>
@@ -28,15 +28,15 @@ scripts: ["/assets/library.js"]
 
     <div class="wa-cluster wa-gap-xs" role="group" aria-label="Shelves">
       {%- for shelf in site.shelves %}
-      <wa-button size="small" pill appearance="outlined" data-shelf="{{ shelf }}" aria-pressed="false">{{ shelf }} <span class="count" data-shelf-count="{{ shelf }}"></span></wa-button>
+      <wa-button size="s" pill appearance="outlined" data-shelf="{{ shelf }}" aria-pressed="false">{{ shelf }} <span class="count" data-shelf-count="{{ shelf }}"></span></wa-button>
       {%- endfor %}
     </div>
 
     <div class="library-status wa-cluster wa-gap-s">
       <p aria-live="polite" class="library-count"><strong data-shown>{{ collections.items.length }}</strong> of {{ collections.items.length }} shown</p>
       <div class="wa-cluster wa-gap-2xs" data-active></div>
-      <wa-button size="small" appearance="plain" variant="brand" data-clear hidden>Clear all</wa-button>
-      <wa-select id="library-sort" size="small" value="new" label="Sort" class="library-sort">
+      <wa-button size="s" appearance="plain" variant="brand" data-clear hidden>Clear all</wa-button>
+      <wa-select id="library-sort" size="s" value="new" label="Sort" class="library-sort">
         <wa-option value="new">Newest first</wa-option>
         <wa-option value="old">Oldest first</wa-option>
         <wa-option value="az">Title A–Z</wa-option>
@@ -79,10 +79,10 @@ scripts: ["/assets/library.js"]
       </div>
       <div class="row-side wa-cluster wa-gap-2xs">
         {%- for tag in d.tags %}
-        <a class="tag-link" href="/library/?tag={{ tag | urlencode }}" data-tag-link="{{ tag }}"><wa-tag size="small">#{{ tag }}</wa-tag></a>
+        <a class="tag-link" href="/library/?tag={{ tag | urlencode }}" data-tag-link="{{ tag }}"><wa-tag size="s">#{{ tag }}</wa-tag></a>
         {%- endfor %}
         {%- if d.shelf %}
-        <a class="tag-link" href="/library/?shelf={{ d.shelf | urlencode }}" data-shelf-link="{{ d.shelf }}"><wa-tag size="small" variant="brand">{{ d.shelf }}</wa-tag></a>
+        <a class="tag-link" href="/library/?shelf={{ d.shelf | urlencode }}" data-shelf-link="{{ d.shelf }}"><wa-tag size="s" variant="brand">{{ d.shelf }}</wa-tag></a>
         {%- else %}
         <span class="unsorted">No shelf</span>
         {%- endif %}

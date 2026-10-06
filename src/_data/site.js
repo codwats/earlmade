@@ -3,7 +3,7 @@ export default {
   description: "A blog that doubles as a shelf of things worth finding again: longer posts, quick thoughts and saved links.",
   // Used for feed links.
   url: "https://earlmade.com",
-  author: "[Your name]",
+  author: "earlmade",
   // Used by /save/ to open a prefilled "new file" page on GitHub.
   repo: "codwats/earlmade",
   branch: "main",

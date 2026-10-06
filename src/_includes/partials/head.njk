@@ -5,9 +5,15 @@
   <meta name="description" content="{{ description or site.description }}">
   {%- if noindex %}<meta name="robots" content="noindex">{% endif %}
   <script>
-    // Follow the system colour scheme before first paint.
-    if (matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.classList.replace("wa-light", "wa-dark");
+    // Follow the system colour scheme before first paint, and when it changes.
+    {
+      const dark = matchMedia("(prefers-color-scheme: dark)");
+      const applyScheme = () => {
+        document.documentElement.classList.toggle("wa-dark", dark.matches);
+        document.documentElement.classList.toggle("wa-light", !dark.matches);
+      };
+      applyScheme();
+      dark.addEventListener("change", applyScheme);
     }
   </script>
   <link rel="stylesheet" href="https://use.typekit.net/zxr3epd.css">

@@ -9,7 +9,7 @@ startHere: true
 Most of what I save is small: a font specimen, a tool, a paragraph someone wrote well. This site exists so I can find those things again without remembering where they came from.
 
 {% callout "context" %}
-This post describes the site you're reading. It's built with [Build Awesome](https://build.awesome.me/docs/) (formerly Eleventy) and [Web Awesome](https://webawesome.com) components. Replace it with your own first post whenever you like.
+This post describes the site you're reading. It's built with [Build Awesome](https://build.awesome.me/docs/) (formerly Eleventy) and [Web Awesome](https://webawesome.com) components.
 {% endcallout %}
 
 ## One file per thing

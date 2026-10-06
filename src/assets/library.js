@@ -45,7 +45,7 @@ if (root) {
 
   function chip(label, onRemove) {
     const tag = document.createElement("wa-tag");
-    tag.size = "small";
+    tag.size = "s";
     tag.withRemove = true;
     tag.textContent = label;
     tag.addEventListener("wa-remove", onRemove);
