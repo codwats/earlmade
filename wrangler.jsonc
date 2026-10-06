@@ -1,0 +1,11 @@
+// Cloudflare Workers static-assets deploy. `npm run build` writes _site/,
+// then `npx wrangler deploy` uploads it. No Worker script: assets only.
+{
+  "name": "earlmade",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./_site",
+    // Unknown paths get _site/404.html with a 404 status.
+    "not_found_handling": "404-page"
+  }
+}
