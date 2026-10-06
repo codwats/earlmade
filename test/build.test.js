@@ -40,13 +40,14 @@ test("pages paint without waiting for the component loader, and preconnect the f
   }
 });
 
-test("every shelf used by a public item has a filter on the home page", async () => {
+test("every shelf used by a public item has an option in the library shelf radio group", async () => {
   const { read } = await build();
-  const filters = read("index.html").match(/<nav[^>]*aria-label="Shelves"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "";
+  const group = read("library/index.html").match(/<wa-radio-group id="library-shelf"[\s\S]*?<\/wa-radio-group>/)?.[0] ?? "";
+  const options = new Set([...group.matchAll(/<wa-radio [^>]*value="([^"]*)"/g)].map((m) => m[1]));
   const used = new Set(JSON.parse(read("library.json")).map((item) => item.shelf).filter(Boolean));
   assert.ok(used.size > 0);
   for (const shelf of used) {
-    assert.ok(filters.includes(`href="/library/?shelf=${encodeURIComponent(shelf)}"`), `no home-page filter for shelf "${shelf}"`);
+    assert.ok(options.has(shelf), `no library shelf option for "${shelf}"`);
   }
 });
 
