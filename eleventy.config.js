@@ -1,4 +1,4 @@
-import { IdAttributePlugin } from "@11ty/eleventy";
+import { IdAttributePlugin } from "@awesome.me/buildawesome";
 
 // Every item (post, note or link) is one Markdown file in src/content/.
 // Only items with `status: public` are built or listed. See CONTEXT.md.

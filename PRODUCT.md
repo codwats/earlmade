@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Web Awesome Pro (UI components and design tokens) with Build Awesome beta (static site generator, installed from npm as `@11ty/eleventy`). Static output with no server-side app. The domain is `earlmade.com`; the deploy host isn't decided yet.
+Web Awesome Pro (UI components and design tokens) with Build Awesome v4 alpha (static site generator, installed from npm as `@awesome.me/buildawesome`). Static output with no server-side app. The domain is `earlmade.com`; the deploy host isn't decided yet.
 
 ## Users
 

@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "earlmade: a personal blog that doubles as a searchable shelf of saved links.",
   "scripts": {
-    "start": "eleventy --serve",
-    "build": "eleventy",
+    "start": "buildawesome --serve",
+    "build": "buildawesome",
     "save": "node scripts/save.js"
   },
   "repository": {
@@ -19,11 +19,11 @@
     "url": "https://github.com/codwats/earlmade/issues"
   },
   "homepage": "https://github.com/codwats/earlmade#readme",
-  "devDependencies": {
-    "@11ty/eleventy": "^3.1.6"
-  },
   "dependencies": {
     "@web.awesome.me/webawesome-pro": "^3.14.0"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@awesome.me/buildawesome": "4.0.0-alpha.10"
+  }
 }
