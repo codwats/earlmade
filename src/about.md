@@ -14,6 +14,6 @@ This site is a blog and a shelf. Longer posts sit next to quick notes and links 
 
 Everything here can be found again from the [library](/library/). There's also a [feed](/feed.xml) if you'd like to follow along.
 
-### [Contact](/links/)
+### [Contact](/links.html)
 
 </div>
