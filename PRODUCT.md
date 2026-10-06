@@ -50,7 +50,7 @@ It's a shelf first and a blog second: three kinds of item in one place, each dra
 
 ## Evidence on Hand
 
-- Public items in `src/content/`: saved links (Web Awesome, Build Awesome docs, Pagefind, Are.na, 988) and one post, "How this site works". Maple Mono and a sample note are in the inbox.
+- Public items in `src/content/`: saved links (Web Awesome, Build Awesome docs, Pagefind, Are.na) and one post, "How this site works". Maple Mono and a sample note are in the inbox.
 - The About page is still placeholder text. There is no bio, photo, or contact detail yet. Don't invent any of them.
 
 ## Product Principles
