@@ -225,3 +225,22 @@ browserTest("links page valley is drawn in the text colour in dark mode", async 
     await page.close();
   }
 });
+
+// If the component loader never runs (scripts off, a failed request), the first-paint
+// hiding must give up after a moment, as Web Awesome's own wa-cloak does.
+browserTest("with scripts off, hidden components and the page shell show up after a moment", async () => {
+  const checks = [
+    ["/links.html", (page) => page.locator("wa-button", { hasText: "YouTube" })],
+    ["/library/", (page) => page.getByRole("navigation", { name: "Site" }).getByRole("link", { name: "Writing" })],
+    ["/writing/how-this-site-works/", (page) => page.getByText("Context", { exact: true })],
+  ];
+  for (const [path, target] of checks) {
+    const page = await open(path, { javaScriptEnabled: false });
+    try {
+      await page.waitForTimeout(2500);
+      assert.ok(await target(page).isVisible(), `${path}: still hidden with scripts off`);
+    } finally {
+      await page.close();
+    }
+  }
+});

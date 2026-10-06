@@ -12,20 +12,31 @@
 
 /* First paint: the page shows as soon as the HTML arrives (no page-wide wa-cloak).
    Until Web Awesome defines its elements, the shell's chrome stays out of the flow,
-   the content sits where the sidebar will leave it, and undefined controls are hidden. */
+   the content sits where the sidebar will leave it, and undefined controls are hidden.
+   Each rule is a 2s step-end animation, like wa-cloak's own: if the loader never runs
+   (scripts off, a failed request), everything falls back into view instead of staying hidden. */
+@keyframes pending-shell {
+  from { display: none; }
+}
+@keyframes pending-page {
+  from { padding-inline-start: var(--menu-width); }
+}
+@keyframes pending-element {
+  from { visibility: hidden; }
+}
 wa-page:not(:defined) {
   display: block;
 }
 wa-page:not(:defined) > [slot] {
-  display: none;
+  animation: 2s step-end pending-shell;
 }
 @media (min-width: 768px) {
   wa-page:not(:defined) {
-    padding-inline-start: var(--menu-width);
+    animation: 2s step-end pending-page;
   }
 }
 :not(:defined):not(wa-page) {
-  visibility: hidden;
+  animation: 2s step-end pending-element;
 }
 
 @font-face {
