@@ -24,3 +24,30 @@ browserTest("library page loads at 390px with no horizontal overflow", async () 
     await page.close();
   }
 });
+
+browserTest("links page has no horizontal overflow at 390px", async () => {
+  const page = await open("/links.html", { width: 390 });
+  try {
+    await page.getByRole("heading", { name: "earlmade" }).waitFor();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    assert.ok(overflow <= 0, `page overflows by ${overflow}px`);
+  } finally {
+    await page.close();
+  }
+});
+
+browserTest("links page valley is drawn in the text colour in dark mode", async () => {
+  const page = await open("/links.html", { colorScheme: "dark" });
+  try {
+    await page.getByRole("heading", { name: "earlmade" }).waitFor();
+    const { valley, surface, text } = await page.evaluate(() => ({
+      valley: getComputedStyle(document.body, "::before").backgroundColor,
+      surface: getComputedStyle(document.body).backgroundColor,
+      text: getComputedStyle(document.body).color,
+    }));
+    assert.notEqual(valley, surface, "valley matches the page background");
+    assert.equal(valley, text);
+  } finally {
+    await page.close();
+  }
+});
