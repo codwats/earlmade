@@ -6,7 +6,7 @@
 import { after } from "node:test";
 import { execFile } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdtempSync, readFileSync, rmSync, statSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { extname, join, normalize } from "node:path";
 import { promisify } from "node:util";
@@ -14,16 +14,29 @@ import { promisify } from "node:util";
 const ROOT = new URL("..", import.meta.url).pathname;
 export const CHROMIUM_PATH = process.env.CHROMIUM_PATH || "/usr/bin/chromium";
 
+// A temporary item on a shelf that isn't in the shelf list, present only for
+// the one build so its warning shows in the log. It stays in the inbox, so it
+// is never built or listed and can't change any other test's output.
+// Removed as soon as the build ends, pass or fail. (Not gitignored: Eleventy
+// skips gitignored files, so the build would never see it.)
+export const FIXTURE = {
+  path: "./src/content/__test-unknown-shelf.md",
+  shelf: "Not a real shelf",
+};
+
 let built;
 export function build() {
   built ??= (async () => {
     const outDir = mkdtempSync(join(tmpdir(), "earlmade-test-"));
     after(() => rmSync(outDir, { recursive: true, force: true }));
+    const fixture = join(ROOT, FIXTURE.path);
+    process.once("exit", () => rmSync(fixture, { force: true }));
+    writeFileSync(fixture, `---\nstatus: inbox\nshelf: ${FIXTURE.shelf}\n---\nTest fixture. Safe to delete.\n`);
     const { stdout, stderr } = await promisify(execFile)(
       process.execPath,
       [join(ROOT, "node_modules/@11ty/eleventy/cmd.cjs"), `--output=${outDir}`],
       { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 },
-    );
+    ).finally(() => rmSync(fixture, { force: true }));
     return {
       outDir,
       log: stdout + stderr,
