@@ -36,7 +36,7 @@
 <article class="entry entry-link wa-stack wa-gap-xs">
   <p class="entry-kind"><wa-icon name="link"></wa-icon>Link</p>
   <h3 class="entry-link-title">
-    <a href="{{ d.url }}">{{ d.label }}<wa-icon name="arrow-up-right-from-square" label="(opens the linked site)"></wa-icon></a>
+    <a href="{{ d.url }}">{{ d.label }}<wa-icon name="arrow-up-right-from-square" label="external link"></wa-icon></a>
     <span class="domain">{{ d.url | hostname }}</span>
   </h3>
   {%- if item.content | trim %}

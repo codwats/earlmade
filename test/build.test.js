@@ -22,6 +22,13 @@ test("About's Contact link reaches the links page, and no page links to /links/"
   }
 });
 
+test("a link entry's outbound icon has a short, accurate label", async () => {
+  const { read } = await build();
+  const icons = read("index.html").match(/<wa-icon name="arrow-up-right-from-square"[^>]*>/g) ?? [];
+  assert.ok(icons.length > 0, "home stream shows no link entries");
+  for (const icon of icons) assert.match(icon, /label="external link"/);
+});
+
 test("pages paint without waiting for the component loader, and preconnect the font host", async () => {
   const { read, outDir } = await build();
   for (const page of htmlPages(outDir)) {
