@@ -5,6 +5,11 @@
  * mapping and are not redeclared here.
  */
 
+/* Layout utilities like .wa-stack set display, which would beat the browser's [hidden] rule. */
+[hidden] {
+  display: none !important;
+}
+
 @font-face {
   font-family: "Maple Mono";
   src: url("/fonts/MapleMono[wght]-VF.woff2") format("woff2");
@@ -413,9 +418,6 @@ wa-button .count {
   align-items: flex-start;
   padding-block: var(--wa-space-l);
   border-bottom: var(--wa-border-width-s) solid var(--wa-color-surface-border);
-}
-.library-row[hidden] {
-  display: none;
 }
 .row-icon {
   display: grid;
