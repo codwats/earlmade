@@ -132,7 +132,7 @@ if (root) {
     search.focus();
   });
 
-  for (const el of root.querySelectorAll("[data-controls]")) el.hidden = false;
+  for (const el of root.querySelectorAll("[data-js-only]")) el.hidden = false;
   search.value = state.q;
   kindGroup.value = state.kind;
   shelfGroup.value = state.shelf;

@@ -14,7 +14,7 @@ scripts: ["/assets/library.js"]
 
   {#- The count sits outside the hidden controls, so its live region is exposed from page load. #}
   <div class="wa-stack wa-gap-m">
-    <div class="library-controls wa-stack wa-gap-m" data-controls hidden>
+    <div class="library-controls wa-stack wa-gap-m" data-js-only hidden>
       <wa-input id="library-search" type="search" label="Search the library" placeholder="Search titles, notes, sites and tags…" with-clear autocomplete="off">
         <wa-icon slot="start" name="magnifying-glass"></wa-icon>
         <kbd slot="end" class="key-hint" aria-hidden="true">/</kbd>
@@ -41,7 +41,7 @@ scripts: ["/assets/library.js"]
       <p aria-live="polite" class="library-count"><strong data-shown>{{ collections.items.length }}</strong> of {{ collections.items.length }} shown</p>
       <div class="wa-cluster wa-gap-2xs" data-active></div>
       <wa-button size="s" appearance="plain" variant="brand" data-clear hidden>Clear all</wa-button>
-      <wa-select id="library-sort" size="s" value="new" label="Sort" class="library-sort" data-controls hidden>
+      <wa-select id="library-sort" size="s" value="new" label="Sort" class="library-sort" data-js-only hidden>
         <wa-option value="new">Newest first</wa-option>
         <wa-option value="old">Oldest first</wa-option>
         <wa-option value="az">Title A–Z</wa-option>
