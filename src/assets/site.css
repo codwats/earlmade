@@ -501,6 +501,14 @@ wa-button .count {
   flex: 1 1 10rem;
   justify-content: flex-end;
 }
+/* Wide: tags sit together at their own width beside the main column, instead of
+   wrapping one per line in a narrow strip. Narrow: they wrap under it as before. */
+@container (min-width: 48rem) {
+  .row-side {
+    flex: 0 1 auto;
+    max-width: 50%;
+  }
+}
 .unsorted {
   font-size: var(--wa-font-size-xs);
   font-style: italic;

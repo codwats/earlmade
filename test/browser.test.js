@@ -25,6 +25,29 @@ browserTest("library page loads at 390px with no horizontal overflow", async () 
   }
 });
 
+browserTest("on a wide screen a library row's tags sit together beside the main column", async () => {
+  const page = await open("/library/", { width: 1440 });
+  try {
+    await page.getByRole("heading", { name: "The library" }).waitFor();
+    await page.waitForFunction(() => customElements.get("wa-tag"));
+    const rows = await page.evaluate(() =>
+      [...document.querySelectorAll("[data-item]")].map((row) => {
+        const tags = [...row.querySelectorAll('a[href^="/library/?"]')].map((a) => a.getBoundingClientRect());
+        const title = row.querySelector("h2, p").getBoundingClientRect();
+        return { tops: tags.map((r) => Math.round(r.top)), title };
+      }),
+    );
+    const multi = rows.filter((r) => r.tops.length > 1);
+    assert.ok(multi.length > 0, "no library row has more than one tag");
+    for (const { tops, title } of multi) {
+      assert.equal(new Set(tops).size, 1, `tags stack across lines: ${tops}`);
+      assert.ok(tops[0] < title.bottom, "tags wrapped below the main column");
+    }
+  } finally {
+    await page.close();
+  }
+});
+
 browserTest("links page has no horizontal overflow at 390px", async () => {
   const page = await open("/links.html", { width: 390 });
   try {
