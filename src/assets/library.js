@@ -71,14 +71,14 @@ if (root) {
     }
 
     // Counts show what each choice would give you with the other filters kept.
-    for (const el of root.querySelectorAll("[data-kind-count]")) {
-      const kind = el.dataset.kindCount;
-      el.textContent = rows.filter((r) => matchQ(r, ws) && matchShelf(r, state.shelf) && matchTag(r) && matchKind(r, kind)).length;
-    }
-    for (const el of root.querySelectorAll("[data-shelf-count]")) {
-      const shelf = el.dataset.shelfCount;
-      el.textContent = rows.filter((r) => matchQ(r, ws) && matchKind(r, state.kind) && matchTag(r) && matchShelf(r, shelf)).length;
-    }
+    const count = (attr, key, matchOthers, matchChoice) => {
+      for (const el of root.querySelectorAll(`[${attr}]`)) {
+        const choice = el.dataset[key];
+        el.textContent = rows.filter((r) => matchQ(r, ws) && matchTag(r) && matchOthers(r) && matchChoice(r, choice)).length;
+      }
+    };
+    count("data-kind-count", "kindCount", (r) => matchShelf(r, state.shelf), matchKind);
+    count("data-shelf-count", "shelfCount", (r) => matchKind(r, state.kind), matchShelf);
 
     activeEl.replaceChildren();
     if (state.q.trim()) activeEl.append(chip(`“${state.q.trim()}”`, () => update({ q: "" }, true)));
