@@ -14,5 +14,5 @@ export default {
     { label: "Instagram", handle: "@earlmade", url: "https://www.instagram.com/earlmade/", icon: "instagram" },
   ],
   // Shelves are optional. An item can have one, or none.
-  shelves: ["Mental health", "Books", "Websites", "Music", "Coding", "Fonts", "Design"],
+  shelves: ["Mental health", "Books", "Websites", "Music", "Coding", "Fonts", "Design", "Gaming"],
 };
