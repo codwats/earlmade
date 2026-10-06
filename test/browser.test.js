@@ -244,3 +244,32 @@ browserTest("with scripts off, hidden components and the page shell show up afte
     }
   }
 });
+
+// Kind is a fixed set of four: one joined control on one line at every width.
+// Shelf is a growing list: separate choices that wrap cleanly.
+// When the status row wraps on a phone, Sort lines up with the content's start edge.
+browserTest("library filters wrap cleanly at 390px and 1280px", async () => {
+  for (const width of [390, 1280]) {
+    const page = await open("/library/", { width });
+    try {
+      await page.locator("#library-search").waitFor();
+      const boxes = (sel) =>
+        page.locator(sel).evaluateAll((els) => els.map((e) => e.getBoundingClientRect().toJSON()));
+      const kinds = await boxes("#library-kind wa-radio");
+      assert.equal(new Set(kinds.map((b) => Math.round(b.top))).size, 1, `${width}px: Kind wraps`);
+      const shelves = await boxes("#library-shelf wa-radio");
+      for (let i = 1; i < shelves.length; i++) {
+        const [a, b] = [shelves[i - 1], shelves[i]];
+        if (Math.round(a.top) === Math.round(b.top))
+          assert.ok(b.left - a.right >= 4, `${width}px: shelf choices ${i - 1} and ${i} touch`);
+      }
+      if (width === 390) {
+        const [sort] = await boxes("#library-sort");
+        const [search] = await boxes("#library-search");
+        assert.ok(Math.abs(sort.left - search.left) <= 1, `390px: Sort is indented by ${sort.left - search.left}px`);
+      }
+    } finally {
+      await page.close();
+    }
+  }
+});

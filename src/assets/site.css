@@ -462,6 +462,41 @@ wa-button .count {
   margin-inline-start: auto;
   min-width: 11rem;
 }
+/* On a phone the status row wraps; Sort then starts at the content edge, full width. */
+@container (width < 36rem) {
+  .library-sort {
+    margin-inline-start: 0;
+    flex-basis: 100%;
+  }
+}
+
+/* Kind is a fixed set of four, so it stays one joined control on one line,
+   with the choices sharing the width on a phone. */
+#library-kind::part(form-control-input) {
+  flex-wrap: nowrap;
+}
+@container (width < 36rem) {
+  #library-kind wa-radio {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
+  }
+  /* Every count sits under its label, so the four cells read evenly. */
+  #library-kind .count {
+    display: block;
+  }
+}
+
+/* Shelves are a growing list, so each choice stands alone and the list wraps
+   cleanly. Pills, like the shelf buttons on the home page. */
+#library-shelf::part(form-control-input) {
+  gap: var(--wa-space-xs);
+}
+#library-shelf wa-radio {
+  margin: 0;
+  border-radius: var(--wa-border-radius-pill);
+}
 
 .library-rows {
   margin: 0;
