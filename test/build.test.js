@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync } from "node:fs";
-import { build } from "./site.js";
+import { build, FIXTURE } from "./site.js";
 
 // Every built HTML page (Web Awesome's own files aside), relative to the output directory.
 const htmlPages = (outDir) =>
@@ -37,4 +37,21 @@ test("pages paint without waiting for the component loader, and preconnect the f
     assert.doesNotMatch(root, /\bwa-cloak\b/, `${page} cloaks the whole page`);
     assert.match(html, /<link rel="preconnect" href="https:\/\/use\.typekit\.net"/, `${page} has no font preconnect`);
   }
+});
+
+test("every shelf used by a public item has a filter on the home page", async () => {
+  const { read } = await build();
+  const filters = read("index.html").match(/<nav[^>]*aria-label="Shelves"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? "";
+  const used = new Set(JSON.parse(read("library.json")).map((item) => item.shelf).filter(Boolean));
+  assert.ok(used.size > 0);
+  for (const shelf of used) {
+    assert.ok(filters.includes(`href="/library/?shelf=${encodeURIComponent(shelf)}"`), `no home-page filter for shelf "${shelf}"`);
+  }
+});
+
+test("build warns about an item on an unknown shelf, naming the file and shelf", async () => {
+  const { log } = await build();
+  const warning = log.split("\n").find((line) => line.includes("[earlmade]") && line.includes(FIXTURE.shelf));
+  assert.ok(warning, "no [earlmade] warning for the unknown shelf");
+  assert.ok(warning.includes(FIXTURE.path), `warning doesn't name ${FIXTURE.path}: ${warning}`);
 });
