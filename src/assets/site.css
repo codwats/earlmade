@@ -10,6 +10,24 @@
   display: none !important;
 }
 
+/* First paint: the page shows as soon as the HTML arrives (no page-wide wa-cloak).
+   Until Web Awesome defines its elements, the shell's chrome stays out of the flow,
+   the content sits where the sidebar will leave it, and undefined controls are hidden. */
+wa-page:not(:defined) {
+  display: block;
+}
+wa-page:not(:defined) > [slot] {
+  display: none;
+}
+@media (min-width: 768px) {
+  wa-page:not(:defined) {
+    padding-inline-start: var(--menu-width);
+  }
+}
+:not(:defined):not(wa-page) {
+  visibility: hidden;
+}
+
 @font-face {
   font-family: "Maple Mono";
   src: url("/fonts/MapleMono[wght]-VF.woff2") format("woff2");

@@ -21,3 +21,13 @@ test("About's Contact link reaches the links page, and no page links to /links/"
     assert.doesNotMatch(read(page), /href="\/links\/"/, `${page} links to /links/`);
   }
 });
+
+test("pages paint without waiting for the component loader, and preconnect the font host", async () => {
+  const { read, outDir } = await build();
+  for (const page of htmlPages(outDir)) {
+    const html = read(page);
+    const root = html.match(/<html\b[^>]*>/)?.[0] ?? "";
+    assert.doesNotMatch(root, /\bwa-cloak\b/, `${page} cloaks the whole page`);
+    assert.match(html, /<link rel="preconnect" href="https:\/\/use\.typekit\.net"/, `${page} has no font preconnect`);
+  }
+});
