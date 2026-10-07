@@ -288,6 +288,41 @@ browserTest("no page scrolls sideways at 320px", async () => {
   }
 });
 
+// Link thumbnails: every card gets one, and none pushes the stream sideways.
+browserTest("the stream at 390px has no horizontal overflow and every thumbnail fits its card", async () => {
+  const page = await open("/", { width: 390 });
+  try {
+    await page.locator(".entry-thumb").first().waitFor();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    assert.ok(overflow <= 0, `page overflows by ${overflow}px`);
+    const fits = await page.$$eval(".entry-link", (cards) =>
+      cards.map((card) => {
+        const c = card.getBoundingClientRect();
+        const t = card.querySelector(".entry-thumb").getBoundingClientRect();
+        return t.width > 0 && t.height > 0 && t.left >= c.left - 0.5 && t.right <= c.right + 0.5;
+      }),
+    );
+    assert.ok(fits.length > 1, "fewer than two link cards");
+    assert.ok(fits.every(Boolean), `thumbnails that don't fit: ${fits}`);
+  } finally {
+    await page.close();
+  }
+});
+
+browserTest("the fallback thumbnail's text takes a token colour that changes in dark mode", async () => {
+  const fills = {};
+  for (const colorScheme of ["light", "dark"]) {
+    const page = await open("/", { colorScheme });
+    try {
+      fills[colorScheme] = await page.locator(".entry-thumb text").first().evaluate((t) => getComputedStyle(t).fill);
+    } finally {
+      await page.close();
+    }
+  }
+  assert.doesNotMatch(fills.light, /^(none|rgb\(0, 0, 0\))$/, "fallback text has no token fill");
+  assert.notEqual(fills.light, fills.dark);
+});
+
 // On a phone the home search reads as one control: field and button on one row.
 browserTest("home search field and button share a row on phones", async () => {
   for (const width of [320, 390]) {

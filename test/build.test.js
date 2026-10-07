@@ -1,8 +1,8 @@
 // Build-output tests: assertions against the generated site and the build log.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync } from "node:fs";
-import { build, FIXTURE } from "./site.js";
+import { readdirSync, readFileSync } from "node:fs";
+import { build, buildWith, FALLBACK_LABEL, FIXTURE, IMAGE_HOST } from "./site.js";
 import site from "../src/_data/site.js";
 
 // Every built HTML page (Web Awesome's own files aside), relative to the output directory.
@@ -72,4 +72,68 @@ test("library shelf filter is a radio group with Any shelf first, then every she
 test("library page has no aria-pressed anywhere", async () => {
   const { read } = await build();
   assert.doesNotMatch(read("library/index.html"), /aria-pressed/);
+});
+
+// --- Images ----------------------------------------------------------------
+
+test("an image next to a post renders as a lazy <picture> with AVIF and WebP and a fixed size", async () => {
+  const { read } = await build();
+  const picture = read("writing/__test-image-post/index.html").match(/<picture>[\s\S]*?<\/picture>/)?.[0];
+  assert.ok(picture, "no <picture> in the post");
+  assert.match(picture, /<source type="image\/avif"/);
+  assert.match(picture, /<source type="image\/webp"/);
+  const img = picture.match(/<img [^>]*>/)[0];
+  assert.match(img, /alt="A test image"/);
+  assert.match(img, /loading="lazy"/);
+  assert.match(img, /width="\d+"/);
+  assert.match(img, /height="\d+"/);
+});
+
+test("an image with no alt text fails the build", async () => {
+  await assert.rejects(
+    buildWith({
+      "./src/content/__test-no-alt.md": "---\ntitle: No alt\nstatus: public\n---\n![](./__test-no-alt.png)\n",
+      "./src/content/__test-no-alt.png": readFileSync(new URL("../src/apple-touch-icon.png", import.meta.url)),
+    }),
+    (err) => /Image with no alt text in \S*__test-no-alt\.md: \.\/__test-no-alt\.png/.test(err.stdout + err.stderr),
+  );
+});
+
+test("images from items that aren't public stay out of the build", async () => {
+  const { outDir } = await build();
+  const leaked = readdirSync(outDir, { recursive: true }).filter((f) => f.includes("__test-private"));
+  assert.deepEqual(leaked, []);
+});
+
+// One fixture link's card in the home stream.
+const card = (html, title) =>
+  html.split("<article ").find((a) => a.includes(`>${title}<wa-icon`)) ?? assert.fail(`no card for ${title}`);
+
+test("a link's image: is downloaded and served from the site, with empty alt", async () => {
+  const { read } = await build();
+  const html = card(read("index.html"), "Test thumbnail link");
+  const thumb = html.match(/<img [^>]*>/)?.[0];
+  assert.ok(thumb, "no thumbnail on the card");
+  assert.match(thumb, /alt=""/);
+  assert.doesNotMatch(html, new RegExp(IMAGE_HOST));
+  const src = thumb.match(/src="(\/[^"]+)"/)?.[1];
+  assert.ok(src, `thumbnail isn't served from the site: ${thumb}`);
+  assert.ok(read(src.slice(1)), `${src} isn't in the build`);
+});
+
+test("a broken image: doesn't fail the build or hot-link the dead host", async () => {
+  const { read } = await build();
+  assert.doesNotMatch(card(read("index.html"), "Test broken thumbnail"), new RegExp(IMAGE_HOST));
+});
+
+test("a link with no image: shows its label in an inline, hidden SVG with a unique pattern", async () => {
+  const { read } = await build();
+  const home = read("index.html");
+  const svg = card(home, FALLBACK_LABEL).match(/<svg [\s\S]*?<\/svg>/)?.[0];
+  assert.ok(svg, "no fallback SVG on the card");
+  assert.match(svg, /aria-hidden="true"/);
+  assert.match(svg, new RegExp(`<text[^>]*>${FALLBACK_LABEL}</text>`));
+  const ids = [...home.matchAll(/<pattern id="([^"]+)"/g)].map((m) => m[1]);
+  assert.ok(ids.length > 1, "the home page shows fewer than two fallbacks");
+  assert.equal(new Set(ids).size, ids.length, `pattern ids repeat: ${ids}`);
 });

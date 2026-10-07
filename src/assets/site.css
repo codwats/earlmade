@@ -409,6 +409,29 @@ wa-button .count {
   vertical-align: 0.15em;
 }
 
+/* Link thumbnail: the OpenGraph shape, whether it holds an image or the fallback. */
+.entry-thumb {
+  inline-size: min(100%, 24rem);
+  aspect-ratio: 1.91;
+  margin-block-end: var(--wa-space-xs);
+  overflow: hidden;
+  border-radius: var(--wa-border-radius-m);
+  background: var(--wa-color-surface-lowered);
+}
+.entry-thumb img,
+.entry-thumb svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.entry-thumb text {
+  font-family: var(--wa-font-family-code);
+  font-size: 14px;
+  fill: var(--wa-color-text-quiet);
+  opacity: 0.5;
+}
+
 .entry-note-text {
   font-size: var(--wa-font-size-l);
   max-width: 46ch;
