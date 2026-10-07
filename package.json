@@ -25,6 +25,7 @@
     "playwright-core": "^1.63.0"
   },
   "dependencies": {
+    "@11ty/eleventy-img": "^7.0.0",
     "@web.awesome.me/webawesome-pro": "^3.14.0"
   },
   "private": true

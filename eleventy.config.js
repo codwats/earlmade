@@ -1,4 +1,5 @@
 import { IdAttributePlugin } from "@11ty/eleventy";
+import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 
 // Every item (post, note or link) is one Markdown file in src/content/.
 // Only items with `status: public` are built or listed. See CONTEXT.md.
@@ -21,6 +22,24 @@ export default function (eleventyConfig) {
 
   // Adds id="…" to headings so posts get linkable sections and a table of contents.
   eleventyConfig.addPlugin(IdAttributePlugin);
+
+  // Every <img> in the built HTML (Markdown images next to an item, and link
+  // thumbnails from `image:`) is optimised and served from the site. Images
+  // with no alt text fail the build. Remote images are cached in .cache.
+  eleventyConfig.addPlugin(eleventyImageTransformPlugin, {
+    formats: ["avif", "webp", "auto"],
+    widths: [400, 800, "auto"],
+    htmlOptions: { imgAttributes: { loading: "lazy", decoding: "async" } },
+  });
+  // Markdown's ![](…) gives alt="", which the transform accepts, so catch it here.
+  eleventyConfig.amendLibrary("md", (md) => {
+    const image = md.renderer.rules.image;
+    md.renderer.rules.image = (tokens, idx, options, env, self) => {
+      if (!tokens[idx].content.trim())
+        throw new Error(`[earlmade] Image with no alt text in ${env.page?.inputPath}: ${tokens[idx].attrGet("src")}`);
+      return image(tokens, idx, options, env, self);
+    };
+  });
 
   eleventyConfig.addGlobalData("isServe", process.env.ELEVENTY_RUN_MODE === "serve");
 
