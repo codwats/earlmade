@@ -1,8 +1,8 @@
 // /save/: turns the two fields into a Markdown file and opens GitHub's
-// "new file" page with it filled in. Reads ?url=&title=&note= so the
+// "new file" page with it filled in. Reads ?url=&title=&image=&note= so the
 // bookmarklet and the share-sheet Shortcut can prefill it.
 
-import { buildItem } from "./item-file.js";
+import { buildItem, IMAGE_KEYS } from "./item-file.js";
 
 const root = document.querySelector("[data-save]");
 
@@ -14,8 +14,9 @@ if (root) {
   const fileEl = root.querySelector("[data-file]");
   const params = new URLSearchParams(location.search);
   let title = params.get("title") ?? "";
+  let image = params.get("image") ?? "";
 
-  const current = () => buildItem({ input: input.value ?? "", note: note.value ?? "", title });
+  const current = () => buildItem({ input: input.value ?? "", note: note.value ?? "", title, image });
 
   function preview() {
     const { filename, markdown } = current();
@@ -38,7 +39,7 @@ if (root) {
   input.value = params.get("url") ?? params.get("text") ?? "";
   note.value = params.get("note") ?? "";
   input.addEventListener("input", () => {
-    title = ""; // a title from the bookmarklet belongs to the original URL only
+    title = image = ""; // a title and image from the bookmarklet belong to the original URL only
     preview();
   });
   note.addEventListener("input", preview);
@@ -53,10 +54,16 @@ if (root) {
     }
   });
 
-  const bookmarklet = root.querySelector("[data-bookmarklet]");
-  bookmarklet.href =
-    `javascript:location.href='${location.origin}/save/?url='+encodeURIComponent(location.href)` +
-    `+'&title='+encodeURIComponent(document.title)`;
+  // Runs on the page being saved: finds its og:image, then builds this form's
+  // URL with the page's address, title and image. The bookmarklet goes there;
+  // the Shortcut hands it back to the next action with completion().
+  const findImage = `var m=${JSON.stringify(IMAGE_KEYS)}.map(function(k){return document.querySelector('meta[property="'+k+'"][content]:not([content=""]),meta[name="'+k+'"][content]:not([content=""])')}).filter(Boolean)[0];`;
+  const saveUrl =
+    `'${location.origin}/save/?url='+encodeURIComponent(location.href)` +
+    `+'&title='+encodeURIComponent(document.title)` +
+    `+(m?'&image='+encodeURIComponent(new URL(m.content,location.href).href):'')`;
+  root.querySelector("[data-bookmarklet]").href = `javascript:${findImage}location.href=${saveUrl}`;
+  root.querySelector("[data-shortcut-script]").textContent = `${findImage}completion(${saveUrl});`;
 
   preview();
 }

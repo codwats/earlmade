@@ -1,7 +1,11 @@
 // Builds the Markdown file for a new item. Shared by /save/ (browser) and
 // `npm run save` (Node), so both write files the same way.
 
-export const isUrl = (text) => /^https?:\/\/\S+$/i.test(text.trim());
+// Where a page's thumbnail is read from, first match wins: by scripts/og-image.js
+// for `npm run save`, and by the bookmarklet on /save/.
+export const IMAGE_KEYS = ["og:image:secure_url", "og:image", "twitter:image"];
+
+export const isUrl =(text) => /^https?:\/\/\S+$/i.test(text.trim());
 
 export function slugify(text, max = 48) {
   return (
@@ -20,8 +24,8 @@ const ymd = (date) =>
   [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
 
 // input: a URL (becomes a link) or any text (becomes a note).
-// note: optional comment. title: optional, for links.
-export function buildItem({ input, note = "", title = "", date = new Date() }) {
+// note: optional comment. title, image: optional, for links.
+export function buildItem({ input, note = "", title = "", image = "", date = new Date() }) {
   const text = input.trim();
   const comment = note.trim();
   const front = [];
@@ -33,6 +37,8 @@ export function buildItem({ input, note = "", title = "", date = new Date() }) {
     slug = slugify(`${url.hostname.replace(/^www\./, "")} ${url.pathname}`);
     front.push(`url: ${JSON.stringify(url.href)}`);
     if (title.trim()) front.push(`title: ${JSON.stringify(title.trim())}`);
+    const src = image.trim();
+    if (isUrl(src) && URL.canParse(src)) front.push(`image: ${JSON.stringify(new URL(src).href)}`);
     body = comment;
   } else {
     slug = slugify(text.split(/\s+/).slice(0, 6).join(" "));

@@ -409,6 +409,28 @@ wa-button .count {
   vertical-align: 0.15em;
 }
 
+/* Link thumbnail: the OpenGraph shape, whether it holds an image or the fallback. */
+.entry-thumb {
+  inline-size: min(100%, 24rem);
+  aspect-ratio: 1.91;
+  margin-block-end: var(--wa-space-xs);
+  overflow: hidden;
+  border-radius: var(--wa-border-radius-m);
+  background: var(--wa-color-surface-lowered);
+}
+.entry-thumb img,
+.entry-thumb svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.entry-thumb text {
+  font-family: var(--wa-font-family-code);
+  fill: var(--wa-color-text-quiet);
+  opacity: 0.5;
+}
+
 .entry-note-text {
   font-size: var(--wa-font-size-l);
   max-width: 46ch;
@@ -523,6 +545,12 @@ wa-button .count {
   border-radius: var(--wa-border-radius-m);
   background: var(--wa-color-surface-lowered);
   color: var(--wa-color-text-quiet);
+}
+/* A link row's thumbnail takes the icon's place, as a small fixed-width slot. */
+.library-row .entry-thumb {
+  inline-size: 6rem;
+  flex: none;
+  margin: 0;
 }
 .row-main {
   flex: 999 1 20rem;
@@ -701,6 +729,22 @@ wa-page[view="mobile"] .toc {
 }
 .bookmarklet {
   font-weight: var(--wa-font-weight-action);
+}
+.shortcut-steps {
+  margin: 0;
+  padding-inline-start: var(--wa-space-l);
+}
+.shortcut-script {
+  position: relative;
+  margin-block-start: var(--wa-space-xs);
+}
+.shortcut-script .file-preview {
+  padding-inline-end: var(--wa-space-2xl);
+}
+.shortcut-script wa-copy-button {
+  position: absolute;
+  inset-block-start: var(--wa-space-2xs);
+  inset-inline-end: var(--wa-space-2xs);
 }
 
 .inbox-list {

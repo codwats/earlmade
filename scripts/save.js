@@ -7,6 +7,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { buildItem, isUrl } from "../src/assets/item-file.js";
+import { ogImage } from "./og-image.js";
 
 const CONTENT_DIR = new URL("../src/content/", import.meta.url).pathname;
 
@@ -29,7 +30,17 @@ if (isUrl(input)) {
   }
 }
 
-let { filename, markdown } = buildItem({ input, note });
+// A thumbnail for a link, from the page's og:image. Never stops the save.
+let image;
+if (isUrl(input)) {
+  try {
+    const res = await fetch(input.trim(), { signal: AbortSignal.timeout(5000) });
+    image = ogImage(await res.text(), res.url);
+  } catch {}
+  if (!image) console.log("No og:image found; the link will show its label instead.");
+}
+
+let { filename, markdown } = buildItem({ input, note, image });
 for (let n = 2; existsSync(join(CONTENT_DIR, filename)); n++) {
   filename = filename.replace(/(-\d+)?\.md$/, `-${n}.md`);
 }

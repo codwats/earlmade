@@ -288,6 +288,45 @@ browserTest("no page scrolls sideways at 320px", async () => {
   }
 });
 
+// Link thumbnails: every card gets one, and none pushes the stream sideways.
+browserTest("the stream and library at 390px have no horizontal overflow and every thumbnail fits its card", async () => {
+  for (const [path, cards] of [["/", ".entry-link"], ["/library/", ".library-row[data-kind=link]"]]) {
+    const page = await open(path, { width: 390 });
+    try {
+      await page.locator(".entry-thumb").first().waitFor();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(overflow <= 0, `${path} overflows by ${overflow}px`);
+      const fits = await page.$$eval(cards, (cards) =>
+        cards.map((card) => {
+          const c = card.getBoundingClientRect();
+          const t = card.querySelector(".entry-thumb").getBoundingClientRect();
+          return t.width > 0 && t.height > 0 && t.left >= c.left - 0.5 && t.right <= c.right + 0.5;
+        }),
+      );
+      assert.ok(fits.length > 1, `fewer than two link cards on ${path}`);
+      assert.ok(fits.every(Boolean), `thumbnails that don't fit on ${path}: ${fits}`);
+    } finally {
+      await page.close();
+    }
+  }
+});
+
+browserTest("the fallback thumbnail's text takes a token colour that changes in dark mode, at home and in the library", async () => {
+  for (const path of ["/", "/library/"]) {
+    const fills = {};
+    for (const colorScheme of ["light", "dark"]) {
+      const page = await open(path, { colorScheme });
+      try {
+        fills[colorScheme] = await page.locator(".entry-thumb text").first().evaluate((t) => getComputedStyle(t).fill);
+      } finally {
+        await page.close();
+      }
+    }
+    assert.doesNotMatch(fills.light, /^(none|rgb\(0, 0, 0\))$/, `fallback text on ${path} has no token fill`);
+    assert.notEqual(fills.light, fills.dark, path);
+  }
+});
+
 // On a phone the home search reads as one control: field and button on one row.
 browserTest("home search field and button share a row on phones", async () => {
   for (const width of [320, 390]) {
@@ -301,5 +340,28 @@ browserTest("home search field and button share a row on phones", async () => {
     } finally {
       await page.close();
     }
+  }
+});
+
+// The Shortcut's script, run on a page with a relative og:image, hands back a
+// /save/ URL carrying the page's address, title and absolute image URL.
+browserTest("Shortcut script on /save/ returns a prefilled /save/ URL", async () => {
+  const page = await open("/save/");
+  try {
+    const script = await page.locator("[data-shortcut-script]").textContent();
+    await page.goto(env.baseURL + "/library/");
+    const result = await page.evaluate((script) => {
+      document.head.insertAdjacentHTML("beforeend", '<meta property="og:image" content="/card.png">');
+      let out;
+      new Function("completion", script)((value) => (out = value));
+      return out;
+    }, script);
+    const url = new URL(result);
+    assert.equal(url.pathname, "/save/");
+    assert.equal(url.searchParams.get("url"), env.baseURL + "/library/");
+    assert.match(url.searchParams.get("title"), /library/i);
+    assert.equal(url.searchParams.get("image"), env.baseURL + "/card.png");
+  } finally {
+    await page.close();
   }
 });
