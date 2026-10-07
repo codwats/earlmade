@@ -730,6 +730,22 @@ wa-page[view="mobile"] .toc {
 .bookmarklet {
   font-weight: var(--wa-font-weight-action);
 }
+.shortcut-steps {
+  margin: 0;
+  padding-inline-start: var(--wa-space-l);
+}
+.shortcut-script {
+  position: relative;
+  margin-block-start: var(--wa-space-xs);
+}
+.shortcut-script .file-preview {
+  padding-inline-end: var(--wa-space-2xl);
+}
+.shortcut-script wa-copy-button {
+  position: absolute;
+  inset-block-start: var(--wa-space-2xs);
+  inset-inline-end: var(--wa-space-2xs);
+}
 
 .inbox-list {
   margin: 0;

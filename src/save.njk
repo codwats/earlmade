@@ -53,7 +53,22 @@ status: inbox
       <wa-card>
         <div class="wa-stack wa-gap-xs">
           <h3 class="way-title"><wa-icon name="mobile-screen"></wa-icon> Share sheet</h3>
-          <p>Make an iOS Shortcut that opens <code>/save/?url=</code> plus the shared URL. It then shows up when you tap Share in Safari, Music or Books.</p>
+          <p>An iOS Shortcut opens this form from Share in Safari, with the page's address, title and thumbnail image filled in.</p>
+          <wa-details summary="Set it up">
+            <div class="wa-stack wa-gap-s">
+            <ol class="wa-stack wa-gap-xs shortcut-steps">
+              <li>In Shortcuts, make a new shortcut. In its details, turn on <strong>Show in Share Sheet</strong> and set it to receive <strong>Safari web pages</strong>.</li>
+              <li>Add <strong>Run JavaScript on Web Page</strong> with the shortcut input, and replace its script with this:
+                <div class="shortcut-script">
+                  <pre class="file-preview"><code id="shortcut-script" data-shortcut-script>…</code></pre>
+                  <wa-copy-button from="shortcut-script"></wa-copy-button>
+                </div>
+              </li>
+              <li>Add <strong>Open URLs</strong> with the JavaScript result.</li>
+            </ol>
+            <p>Music and Books don't share web pages, so the script can't run there. For those, make a second shortcut that receives URLs and opens <code>/save/?url=</code> plus the shared URL. Those links show their label instead of an image.</p>
+            </div>
+          </wa-details>
         </div>
       </wa-card>
       <wa-card>

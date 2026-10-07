@@ -54,12 +54,16 @@ if (root) {
     }
   });
 
-  const bookmarklet = root.querySelector("[data-bookmarklet]");
-  bookmarklet.href =
-    `javascript:var m=${JSON.stringify(IMAGE_KEYS)}.map(function(k){return document.querySelector('meta[property="'+k+'"][content]:not([content=""]),meta[name="'+k+'"][content]:not([content=""])')}).filter(Boolean)[0];` +
-    `location.href='${location.origin}/save/?url='+encodeURIComponent(location.href)` +
+  // Runs on the page being saved: finds its og:image, then builds this form's
+  // URL with the page's address, title and image. The bookmarklet goes there;
+  // the Shortcut hands it back to the next action with completion().
+  const findImage = `var m=${JSON.stringify(IMAGE_KEYS)}.map(function(k){return document.querySelector('meta[property="'+k+'"][content]:not([content=""]),meta[name="'+k+'"][content]:not([content=""])')}).filter(Boolean)[0];`;
+  const saveUrl =
+    `'${location.origin}/save/?url='+encodeURIComponent(location.href)` +
     `+'&title='+encodeURIComponent(document.title)` +
     `+(m?'&image='+encodeURIComponent(new URL(m.content,location.href).href):'')`;
+  root.querySelector("[data-bookmarklet]").href = `javascript:${findImage}location.href=${saveUrl}`;
+  root.querySelector("[data-shortcut-script]").textContent = `${findImage}completion(${saveUrl});`;
 
   preview();
 }

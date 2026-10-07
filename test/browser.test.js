@@ -342,3 +342,26 @@ browserTest("home search field and button share a row on phones", async () => {
     }
   }
 });
+
+// The Shortcut's script, run on a page with a relative og:image, hands back a
+// /save/ URL carrying the page's address, title and absolute image URL.
+browserTest("Shortcut script on /save/ returns a prefilled /save/ URL", async () => {
+  const page = await open("/save/");
+  try {
+    const script = await page.locator("[data-shortcut-script]").textContent();
+    await page.goto(env.baseURL + "/library/");
+    const result = await page.evaluate((script) => {
+      document.head.insertAdjacentHTML("beforeend", '<meta property="og:image" content="/card.png">');
+      let out;
+      new Function("completion", script)((value) => (out = value));
+      return out;
+    }, script);
+    const url = new URL(result);
+    assert.equal(url.pathname, "/save/");
+    assert.equal(url.searchParams.get("url"), env.baseURL + "/library/");
+    assert.match(url.searchParams.get("title"), /library/i);
+    assert.equal(url.searchParams.get("image"), env.baseURL + "/card.png");
+  } finally {
+    await page.close();
+  }
+});
