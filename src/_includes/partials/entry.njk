@@ -16,7 +16,8 @@
 {% endmacro %}
 
 {#- A link's thumbnail, on the home stream and in the library.
-    The Image transform downloads, optimises and self-hosts `image:`. If that
+    The Image transform downloads (or, for a file next to the item, reads),
+    optimises and self-hosts `image:`. If that
     fails, a transparent placeholder keeps the slot and the build going.
     With no image, the label tiles at 45° like brickwork: an inline SVG, so it
     takes the page font and colour tokens. Maple Mono is 0.6em wide per character. -#}
@@ -24,7 +25,7 @@
 {%- set d = item.data -%}
 <div class="entry-thumb">
   {%- if d.image %}
-  <img src="{{ d.image }}" alt="" width="1200" height="630" eleventy:optional="placeholder">
+  <img src="{{ d.image | itemImage(item.page.inputPath) }}" alt="" width="1200" height="630" eleventy:optional="placeholder">
   {%- else %}
   {%- set fontSize = 14 %}
   {%- set textWidth = (d.label | length) * fontSize * 0.6 %}

@@ -26,7 +26,7 @@ export const FIXTURE = {
 
 // Image fixtures, written and removed the same way: a public post with a sibling
 // image, a private one whose image must stay out, and public links with a
-// thumbnail, a broken thumbnail and none. Their "remote" thumbnails come from a
+// thumbnail, a broken thumbnail, a local thumbnail file and none. Their "remote" thumbnails come from a
 // local server, so no test needs the network.
 export const FALLBACK_LABEL = "A long fallback label that has to tile cleanly";
 const PNG = readFileSync(join(ROOT, "src/apple-touch-icon.png"));
@@ -37,6 +37,8 @@ const imageFixtures = (host) => ({
   "./src/content/__test-private.png": PNG,
   "./src/content/__test-thumb-link.md": `---\nurl: https://example.com/thumb\ntitle: Test thumbnail link\nimage: ${host}/thumb.png\nstatus: public\n---\n`,
   "./src/content/__test-broken-thumb-link.md": `---\nurl: https://example.com/broken\ntitle: Test broken thumbnail\nimage: ${host}/missing.png\nstatus: public\n---\n`,
+  "./src/content/__test-local-thumb-link.md": "---\nurl: https://example.com/local\ntitle: Test local thumbnail\nimage: ./__test-local-thumb.png\nstatus: public\n---\n",
+  "./src/content/__test-local-thumb.png": PNG,
   "./src/content/__test-fallback-link.md": `---\nurl: https://example.com/fallback\ntitle: ${FALLBACK_LABEL}\nstatus: public\n---\n`,
   // Two links whose fileSlug is the same: Eleventy drops the date from it.
   "./src/content/2020-01-01-__test-same-slug.md": "---\nurl: https://example.com/same-1\ntitle: Test same slug one\nstatus: public\n---\n",

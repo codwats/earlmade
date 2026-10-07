@@ -123,6 +123,20 @@ test("a link's image: is downloaded and served from the site, with empty alt", a
   assert.ok(read(src.slice(1)), `${src} isn't in the build`);
 });
 
+// A local image: is a file next to the item, wherever the card is drawn.
+test("a link's image: can be a file next to the item, on the home stream and in the library", async () => {
+  const { read } = await build();
+  const home = card(read("index.html"), "Test local thumbnail");
+  const row = read("library/index.html").split("<li ").find((r) => r.includes(">Test local thumbnail</a>"));
+  for (const [where, html] of [["home", home], ["library", row]]) {
+    const thumb = html?.match(/<div class="entry-thumb">\s*(?:<picture>[\s\S]*?)?(<img [^>]*>)/)?.[1];
+    assert.ok(thumb, `${where}: no thumbnail`);
+    const src = thumb.match(/src="(\/[^"]+)"/)?.[1];
+    assert.ok(src, `${where}: the local file wasn't found: ${thumb}`);
+    assert.ok(read(src.slice(1)), `${where}: ${src} isn't in the build`);
+  }
+});
+
 test("a broken image: doesn't fail the build or hot-link the dead host, and keeps the slot's size", async () => {
   const { read } = await build();
   const html = card(read("index.html"), "Test broken thumbnail");

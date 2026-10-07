@@ -1,5 +1,6 @@
 import { IdAttributePlugin } from "@11ty/eleventy";
 import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
+import { posix } from "node:path";
 
 // Every item (post, note or link) is one Markdown file in src/content/.
 // Only items with `status: public` are built or listed. See CONTEXT.md.
@@ -88,6 +89,13 @@ export default function (eleventyConfig) {
   });
 
   eleventyConfig.addFilter("isoDate", (date) => new Date(date).toISOString());
+
+  // A link's image: is a URL, or a file next to the item. Cards are drawn on
+  // other pages, so a file becomes a path from src/, which the Image transform
+  // resolves the same way from any page.
+  eleventyConfig.addFilter("itemImage", (image, inputPath) =>
+    URL.canParse(image) ? image : "/" + posix.relative(config.dir.input, posix.join(posix.dirname(inputPath), image)),
+  );
 
   eleventyConfig.addFilter("hostname", (url) => {
     try {
