@@ -303,8 +303,11 @@ wa-button .count {
 .hero-search {
   max-width: 44rem;
 }
+/* Field and button stay on one row down to 320px; min-width lets the field
+   shrink below its content width instead of pushing the page sideways. */
 .hero-search-input {
-  flex: 1 1 18rem;
+  flex: 1 1 9rem;
+  min-width: 0;
 }
 .hero-search-input::part(label) {
   position: absolute;

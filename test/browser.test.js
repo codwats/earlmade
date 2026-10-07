@@ -273,3 +273,33 @@ browserTest("library filters wrap cleanly at 390px and 1280px", async () => {
     }
   }
 });
+
+// WCAG 1.4.10 Reflow: no page scrolls sideways at 320 CSS px.
+browserTest("no page scrolls sideways at 320px", async () => {
+  for (const path of ["/", "/library/", "/writing/", "/writing/how-this-site-works/", "/about/", "/links.html", "/404.html"]) {
+    const page = await open(path, { width: 320 });
+    try {
+      await page.waitForTimeout(500);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(overflow <= 0, `${path} overflows by ${overflow}px`);
+    } finally {
+      await page.close();
+    }
+  }
+});
+
+// On a phone the home search reads as one control: field and button on one row.
+browserTest("home search field and button share a row on phones", async () => {
+  for (const width of [320, 390]) {
+    const page = await open("/", { width });
+    try {
+      await page.locator(".hero-search wa-button").waitFor();
+      const [field, button] = await Promise.all(
+        [".hero-search-input", ".hero-search wa-button"].map((s) => page.locator(s).evaluate((e) => e.getBoundingClientRect().toJSON())),
+      );
+      assert.ok(Math.abs(field.top - button.top) < field.height, `${width}px: Search wraps below the field`);
+    } finally {
+      await page.close();
+    }
+  }
+});
