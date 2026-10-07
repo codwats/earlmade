@@ -6,6 +6,8 @@ permalink: /about/
 
 <div class="page-wrap prose">
 
+<wa-avatar class="about-portrait" image="/assets/earlmade.avif" label="Portrait of earl"></wa-avatar>
+
 # About
 
 Yo, I'm earl. By day I run a print and design studio. The rest of the time I'm building things I probably don't need, playing too much Magic, and saving links I swear I'll come back to. Now I actually can.

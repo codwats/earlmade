@@ -830,3 +830,7 @@ wa-page[view="mobile"] .toc {
   font-weight: var(--wa-font-weight-body);
   color: var(--wa-color-text-quiet);
 }
+
+.about-portrait {
+  --size: 8rem;
+}
