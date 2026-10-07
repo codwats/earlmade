@@ -20,8 +20,8 @@ const ymd = (date) =>
   [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
 
 // input: a URL (becomes a link) or any text (becomes a note).
-// note: optional comment. title: optional, for links.
-export function buildItem({ input, note = "", title = "", date = new Date() }) {
+// note: optional comment. title, image: optional, for links.
+export function buildItem({ input, note = "", title = "", image = "", date = new Date() }) {
   const text = input.trim();
   const comment = note.trim();
   const front = [];
@@ -33,6 +33,7 @@ export function buildItem({ input, note = "", title = "", date = new Date() }) {
     slug = slugify(`${url.hostname.replace(/^www\./, "")} ${url.pathname}`);
     front.push(`url: ${JSON.stringify(url.href)}`);
     if (title.trim()) front.push(`title: ${JSON.stringify(title.trim())}`);
+    if (isUrl(image) && URL.canParse(image.trim())) front.push(`image: ${JSON.stringify(new URL(image.trim()).href)}`);
     body = comment;
   } else {
     slug = slugify(text.split(/\s+/).slice(0, 6).join(" "));
