@@ -289,38 +289,42 @@ browserTest("no page scrolls sideways at 320px", async () => {
 });
 
 // Link thumbnails: every card gets one, and none pushes the stream sideways.
-browserTest("the stream at 390px has no horizontal overflow and every thumbnail fits its card", async () => {
-  const page = await open("/", { width: 390 });
-  try {
-    await page.locator(".entry-thumb").first().waitFor();
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    assert.ok(overflow <= 0, `page overflows by ${overflow}px`);
-    const fits = await page.$$eval(".entry-link", (cards) =>
-      cards.map((card) => {
-        const c = card.getBoundingClientRect();
-        const t = card.querySelector(".entry-thumb").getBoundingClientRect();
-        return t.width > 0 && t.height > 0 && t.left >= c.left - 0.5 && t.right <= c.right + 0.5;
-      }),
-    );
-    assert.ok(fits.length > 1, "fewer than two link cards");
-    assert.ok(fits.every(Boolean), `thumbnails that don't fit: ${fits}`);
-  } finally {
-    await page.close();
-  }
-});
-
-browserTest("the fallback thumbnail's text takes a token colour that changes in dark mode", async () => {
-  const fills = {};
-  for (const colorScheme of ["light", "dark"]) {
-    const page = await open("/", { colorScheme });
+browserTest("the stream and library at 390px have no horizontal overflow and every thumbnail fits its card", async () => {
+  for (const [path, cards] of [["/", ".entry-link"], ["/library/", ".library-row[data-kind=link]"]]) {
+    const page = await open(path, { width: 390 });
     try {
-      fills[colorScheme] = await page.locator(".entry-thumb text").first().evaluate((t) => getComputedStyle(t).fill);
+      await page.locator(".entry-thumb").first().waitFor();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      assert.ok(overflow <= 0, `${path} overflows by ${overflow}px`);
+      const fits = await page.$$eval(cards, (cards) =>
+        cards.map((card) => {
+          const c = card.getBoundingClientRect();
+          const t = card.querySelector(".entry-thumb").getBoundingClientRect();
+          return t.width > 0 && t.height > 0 && t.left >= c.left - 0.5 && t.right <= c.right + 0.5;
+        }),
+      );
+      assert.ok(fits.length > 1, `fewer than two link cards on ${path}`);
+      assert.ok(fits.every(Boolean), `thumbnails that don't fit on ${path}: ${fits}`);
     } finally {
       await page.close();
     }
   }
-  assert.doesNotMatch(fills.light, /^(none|rgb\(0, 0, 0\))$/, "fallback text has no token fill");
-  assert.notEqual(fills.light, fills.dark);
+});
+
+browserTest("the fallback thumbnail's text takes a token colour that changes in dark mode, at home and in the library", async () => {
+  for (const path of ["/", "/library/"]) {
+    const fills = {};
+    for (const colorScheme of ["light", "dark"]) {
+      const page = await open(path, { colorScheme });
+      try {
+        fills[colorScheme] = await page.locator(".entry-thumb text").first().evaluate((t) => getComputedStyle(t).fill);
+      } finally {
+        await page.close();
+      }
+    }
+    assert.doesNotMatch(fills.light, /^(none|rgb\(0, 0, 0\))$/, `fallback text on ${path} has no token fill`);
+    assert.notEqual(fills.light, fills.dark, path);
+  }
 });
 
 // On a phone the home search reads as one control: field and button on one row.

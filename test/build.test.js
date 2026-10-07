@@ -115,15 +115,38 @@ test("a link's image: is downloaded and served from the site, with empty alt", a
   const thumb = html.match(/<img [^>]*>/)?.[0];
   assert.ok(thumb, "no thumbnail on the card");
   assert.match(thumb, /alt=""/);
+  assert.match(thumb, /width="\d+"/);
+  assert.match(thumb, /height="\d+"/);
   assert.doesNotMatch(html, new RegExp(IMAGE_HOST));
   const src = thumb.match(/src="(\/[^"]+)"/)?.[1];
   assert.ok(src, `thumbnail isn't served from the site: ${thumb}`);
   assert.ok(read(src.slice(1)), `${src} isn't in the build`);
 });
 
-test("a broken image: doesn't fail the build or hot-link the dead host", async () => {
+test("a broken image: doesn't fail the build or hot-link the dead host, and keeps the slot's size", async () => {
   const { read } = await build();
-  assert.doesNotMatch(card(read("index.html"), "Test broken thumbnail"), new RegExp(IMAGE_HOST));
+  const html = card(read("index.html"), "Test broken thumbnail");
+  assert.doesNotMatch(html, new RegExp(IMAGE_HOST));
+  const img = html.match(/<img [^>]*>/)?.[0] ?? "";
+  if (img) assert.match(img, /width="\d+" height="\d+"/);
+});
+
+test("two links with the same slug on different dates get different pattern ids", async () => {
+  const { read } = await build();
+  const home = read("index.html");
+  const id = (title) => card(home, title).match(/<pattern id="([^"]+)"/)?.[1];
+  assert.ok(id("Test same slug one"));
+  assert.notEqual(id("Test same slug one"), id("Test same slug two"));
+});
+
+test("library link rows show the same thumbnail as the home stream", async () => {
+  const { read } = await build();
+  const rows = read("library/index.html").split("<li ").filter((r) => r.includes('data-kind="link"'));
+  const row = (title) => rows.find((r) => r.includes(`>${title}</a>`)) ?? assert.fail(`no row for ${title}`);
+  assert.match(row("Test thumbnail link"), /<div class="entry-thumb">\s*<(img|picture)[^>]*>/);
+  assert.match(row(FALLBACK_LABEL), new RegExp(`<svg aria-hidden="true"[\\s\\S]*<text[^>]*>${FALLBACK_LABEL}</text>`));
+  const ids = [...read("library/index.html").matchAll(/<pattern id="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(new Set(ids).size, ids.length, `pattern ids repeat: ${ids}`);
 });
 
 test("a link with no image: shows its label in an inline, hidden SVG with a unique pattern", async () => {

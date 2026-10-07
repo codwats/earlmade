@@ -4,6 +4,7 @@ title: Library
 description: Every post, note and saved link in one place.
 scripts: ["/assets/library.js"]
 ---
+{%- from "partials/entry.njk" import thumb -%}
 {#- The full list is rendered as HTML, so the library works without JavaScript.
     library.js adds search, filters, counts and sorting on top of it. -#}
 <div class="page-wrap wa-stack wa-gap-xl" data-library>
@@ -66,9 +67,13 @@ scripts: ["/assets/library.js"]
       data-date="{{ item.date | isoDate }}"
       data-title="{{ d.label or text | truncate(80) }}"
       data-text="{{ [d.label, text, d.url | hostname, d.shelf, (d.tags or []) | join(' ')] | join(' ') | lower }}">
+      {%- if d.kind == "link" %}
+      {{ thumb(item) }}
+      {%- else %}
       <span class="row-icon" aria-hidden="true">
-        <wa-icon name="{{ 'file-lines' if d.kind == 'post' else ('pen' if d.kind == 'note' else 'link') }}"></wa-icon>
+        <wa-icon name="{{ 'file-lines' if d.kind == 'post' else 'pen' }}"></wa-icon>
       </span>
+      {%- endif %}
       <div class="row-main wa-stack wa-gap-2xs">
         {%- if d.kind == "note" %}
         <p class="row-note"><a href="{{ item.url }}">{{ text | truncate(200) }}</a></p>

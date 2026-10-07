@@ -38,12 +38,15 @@ const imageFixtures = (host) => ({
   "./src/content/__test-thumb-link.md": `---\nurl: https://example.com/thumb\ntitle: Test thumbnail link\nimage: ${host}/thumb.png\nstatus: public\n---\n`,
   "./src/content/__test-broken-thumb-link.md": `---\nurl: https://example.com/broken\ntitle: Test broken thumbnail\nimage: ${host}/missing.png\nstatus: public\n---\n`,
   "./src/content/__test-fallback-link.md": `---\nurl: https://example.com/fallback\ntitle: ${FALLBACK_LABEL}\nstatus: public\n---\n`,
+  // Two links whose fileSlug is the same: Eleventy drops the date from it.
+  "./src/content/2020-01-01-__test-same-slug.md": "---\nurl: https://example.com/same-1\ntitle: Test same slug one\nstatus: public\n---\n",
+  "./src/content/2020-01-02-__test-same-slug.md": "---\nurl: https://example.com/same-2\ntitle: Test same slug two\nstatus: public\n---\n",
 });
 export const IMAGE_HOST = "127.0.0.1";
 
 // One Eleventy build into a temp directory, with `files` written into the repo
 // for its duration only. Rejects when the build fails (its log is on the error).
-async function run(files) {
+async function buildWithFixtures(files) {
   const outDir = mkdtempSync(join(tmpdir(), "earlmade-test-"));
   // On exit, not after(): called from inside a test, after() would remove it when that test ends.
   process.once("exit", () => rmSync(outDir, { recursive: true, force: true }));
@@ -71,7 +74,7 @@ export function build() {
     );
     await new Promise((resolve) => host.listen(0, IMAGE_HOST, resolve));
     try {
-      return await run({
+      return await buildWithFixtures({
         [FIXTURE.path]: `---\nstatus: inbox\nshelf: ${FIXTURE.shelf}\n---\nTest fixture. Safe to delete.\n`,
         ...imageFixtures(`http://${IMAGE_HOST}:${host.address().port}`),
       });
@@ -86,7 +89,7 @@ export function build() {
 // the shared build, so the two sets of fixtures never meet.
 export async function buildWith(files) {
   await build().catch(() => {});
-  return run(files);
+  return buildWithFixtures(files);
 }
 
 const TYPES = {
