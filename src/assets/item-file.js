@@ -1,7 +1,11 @@
 // Builds the Markdown file for a new item. Shared by /save/ (browser) and
 // `npm run save` (Node), so both write files the same way.
 
-export const isUrl = (text) => /^https?:\/\/\S+$/i.test(text.trim());
+// Where a page's thumbnail is read from, first match wins: by scripts/og-image.js
+// for `npm run save`, and by the bookmarklet on /save/.
+export const IMAGE_KEYS = ["og:image:secure_url", "og:image", "twitter:image"];
+
+export const isUrl =(text) => /^https?:\/\/\S+$/i.test(text.trim());
 
 export function slugify(text, max = 48) {
   return (
@@ -33,7 +37,8 @@ export function buildItem({ input, note = "", title = "", image = "", date = new
     slug = slugify(`${url.hostname.replace(/^www\./, "")} ${url.pathname}`);
     front.push(`url: ${JSON.stringify(url.href)}`);
     if (title.trim()) front.push(`title: ${JSON.stringify(title.trim())}`);
-    if (isUrl(image) && URL.canParse(image.trim())) front.push(`image: ${JSON.stringify(new URL(image.trim()).href)}`);
+    const src = image.trim();
+    if (isUrl(src) && URL.canParse(src)) front.push(`image: ${JSON.stringify(new URL(src).href)}`);
     body = comment;
   } else {
     slug = slugify(text.split(/\s+/).slice(0, 6).join(" "));

@@ -37,7 +37,7 @@ if (isUrl(input)) {
     const res = await fetch(input.trim(), { signal: AbortSignal.timeout(5000) });
     image = ogImage(await res.text(), res.url);
   } catch {}
-  if (!image) console.log("No og:image found; the link will show its title instead.");
+  if (!image) console.log("No og:image found; the link will show its label instead.");
 }
 
 let { filename, markdown } = buildItem({ input, note, image });

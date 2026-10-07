@@ -33,11 +33,11 @@ export default function (eleventyConfig) {
   });
   // Markdown's ![](…) gives alt="", which the transform accepts, so catch it here.
   eleventyConfig.amendLibrary("md", (md) => {
-    const image = md.renderer.rules.image;
+    const defaultImageRule = md.renderer.rules.image;
     md.renderer.rules.image = (tokens, idx, options, env, self) => {
       if (!tokens[idx].content.trim())
         throw new Error(`[earlmade] Image with no alt text in ${env.page?.inputPath}: ${tokens[idx].attrGet("src")}`);
-      return image(tokens, idx, options, env, self);
+      return defaultImageRule(tokens, idx, options, env, self);
     };
   });
 

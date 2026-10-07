@@ -2,7 +2,7 @@
 // "new file" page with it filled in. Reads ?url=&title=&image=&note= so the
 // bookmarklet and the share-sheet Shortcut can prefill it.
 
-import { buildItem } from "./item-file.js";
+import { buildItem, IMAGE_KEYS } from "./item-file.js";
 
 const root = document.querySelector("[data-save]");
 
@@ -55,9 +55,8 @@ if (root) {
   });
 
   const bookmarklet = root.querySelector("[data-bookmarklet]");
-  // Reads og:image in the same order as scripts/og-image.js.
   bookmarklet.href =
-    `javascript:var m=['og:image:secure_url','og:image','twitter:image'].map(function(k){return document.querySelector('meta[property="'+k+'"][content]:not([content=""]),meta[name="'+k+'"][content]:not([content=""])')}).filter(Boolean)[0];` +
+    `javascript:var m=${JSON.stringify(IMAGE_KEYS)}.map(function(k){return document.querySelector('meta[property="'+k+'"][content]:not([content=""]),meta[name="'+k+'"][content]:not([content=""])')}).filter(Boolean)[0];` +
     `location.href='${location.origin}/save/?url='+encodeURIComponent(location.href)` +
     `+'&title='+encodeURIComponent(document.title)` +
     `+(m?'&image='+encodeURIComponent(new URL(m.content,location.href).href):'')`;

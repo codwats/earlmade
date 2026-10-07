@@ -1,6 +1,6 @@
-// Reads a page's thumbnail from its HTML: the first of og:image:secure_url,
-// og:image, twitter:image (as `property` or `name`), resolved against the page URL.
-const KEYS = ["og:image:secure_url", "og:image", "twitter:image"];
+// Reads a page's thumbnail from its HTML: the first IMAGE_KEYS meta (as
+// `property` or `name`), resolved against the page URL.
+import { IMAGE_KEYS } from "../src/assets/item-file.js";
 
 export function ogImage(html, pageUrl) {
   const metas = [...html.matchAll(/<meta\b[^>]*>/gi)].map(([tag]) =>
@@ -11,7 +11,7 @@ export function ogImage(html, pageUrl) {
       ]),
     ),
   );
-  for (const key of KEYS) {
+  for (const key of IMAGE_KEYS) {
     const meta = metas.find((m) => m.content && [m.property, m.name].some((k) => k?.toLowerCase() === key));
     if (meta && URL.canParse(meta.content, pageUrl)) return new URL(meta.content, pageUrl).href;
   }
