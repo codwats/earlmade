@@ -4,7 +4,6 @@ description: One Markdown file per thing, three kinds of thing, and nothing publ
 status: public
 shelf: Coding
 tags: [eleventy, indieweb]
-startHere: true
 ---
 Most of what I save is small: a font specimen, a tool, a paragraph someone wrote well. This site exists so I can find those things again without remembering where they came from.
 
