@@ -10,6 +10,35 @@
   display: none !important;
 }
 
+/* First paint: the page shows as soon as the HTML arrives (no page-wide wa-cloak).
+   Until Web Awesome defines its elements, the shell's chrome stays out of the flow,
+   the content sits where the sidebar will leave it, and undefined controls are hidden.
+   Each rule is a 2s step-end animation, like wa-cloak's own: if the loader never runs
+   (scripts off, a failed request), everything falls back into view instead of staying hidden. */
+@keyframes pending-shell {
+  from { display: none; }
+}
+@keyframes pending-page {
+  from { padding-inline-start: var(--menu-width); }
+}
+@keyframes pending-element {
+  from { visibility: hidden; }
+}
+wa-page:not(:defined) {
+  display: block;
+}
+wa-page:not(:defined) > [slot] {
+  animation: 2s step-end pending-shell;
+}
+@media (min-width: 768px) {
+  wa-page:not(:defined) {
+    animation: 2s step-end pending-page;
+  }
+}
+:not(:defined):not(wa-page) {
+  animation: 2s step-end pending-element;
+}
+
 @font-face {
   font-family: "Maple Mono";
   src: url("/fonts/MapleMono[wght]-VF.woff2") format("woff2");
@@ -274,8 +303,11 @@ wa-button .count {
 .hero-search {
   max-width: 44rem;
 }
+/* Field and button stay on one row down to 320px; min-width lets the field
+   shrink below its content width instead of pushing the page sideways. */
 .hero-search-input {
-  flex: 1 1 18rem;
+  flex: 1 1 9rem;
+  min-width: 0;
 }
 .hero-search-input::part(label) {
   position: absolute;
@@ -433,6 +465,41 @@ wa-button .count {
   margin-inline-start: auto;
   min-width: 11rem;
 }
+/* On a phone the status row wraps; Sort then starts at the content edge, full width. */
+@container (width < 36rem) {
+  .library-sort {
+    margin-inline-start: 0;
+    flex-basis: 100%;
+  }
+}
+
+/* Kind is a fixed set of four, so it stays one joined control on one line,
+   with the choices sharing the width on a phone. */
+#library-kind::part(form-control-input) {
+  flex-wrap: nowrap;
+}
+@container (width < 36rem) {
+  #library-kind wa-radio {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
+  }
+  /* Every count sits under its label, so the four cells read evenly. */
+  #library-kind .count {
+    display: block;
+  }
+}
+
+/* Shelves are a growing list, so each choice stands alone and the list wraps
+   cleanly. Pills, like the shelf buttons on the home page. */
+#library-shelf::part(form-control-input) {
+  gap: var(--wa-space-xs);
+}
+#library-shelf wa-radio {
+  margin: 0;
+  border-radius: var(--wa-border-radius-pill);
+}
 
 .library-rows {
   margin: 0;
@@ -482,6 +549,14 @@ wa-button .count {
 .row-side {
   flex: 1 1 10rem;
   justify-content: flex-end;
+}
+/* Wide: tags sit together at their own width beside the main column, instead of
+   wrapping one per line in a narrow strip. Narrow: they wrap under it as before. */
+@container (min-width: 48rem) {
+  .row-side {
+    flex: 0 1 auto;
+    max-width: 50%;
+  }
 }
 .unsorted {
   font-size: var(--wa-font-size-xs);
@@ -657,20 +732,23 @@ wa-page[view="mobile"] .toc {
 
 .links-page {
   min-height: 100vh;
+  min-height: 100dvh; /* steady as mobile toolbars show and hide */
   margin: 0;
   background: var(--wa-color-surface-lowered);
 }
 .links-page::before {
-  /* Valley art, tinted to the text colour so it shows in light and dark. */
+  /* Valley art in the text colour, softened, so it sits back in light and dark. */
   content: "";
   position: fixed;
   right: 0;
   bottom: 0;
-  width: min(160vw, 80rem);
+  /* Capped by height too, so on wide, short screens the peaks stay below the links. */
+  width: min(160vw, 80rem, 85vh);
   aspect-ratio: 1233 / 659;
   /* Bleeds off the bottom-right corner; tune these to show more or less. */
   translate: 25% 20%;
-  background: var(--wa-color-neutral-05);
+  background: var(--wa-color-text-normal);
+  opacity: 0.3;
   mask: url("/assets/valley.svg") no-repeat right bottom / contain;
   pointer-events: none;
 }

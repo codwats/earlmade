@@ -9,7 +9,7 @@ if (root) {
   const search = root.querySelector("#library-search");
   const kindGroup = root.querySelector("#library-kind");
   const sortSelect = root.querySelector("#library-sort");
-  const shelfButtons = [...root.querySelectorAll("wa-button[data-shelf]")];
+  const shelfGroup = root.querySelector("#library-shelf");
   const shownEl = root.querySelector("[data-shown]");
   const activeEl = root.querySelector("[data-active]");
   const clearBtn = root.querySelector("[data-clear]");
@@ -71,20 +71,14 @@ if (root) {
     }
 
     // Counts show what each choice would give you with the other filters kept.
-    for (const el of root.querySelectorAll("[data-kind-count]")) {
-      const kind = el.dataset.kindCount;
-      el.textContent = rows.filter((r) => matchQ(r, ws) && matchShelf(r, state.shelf) && matchTag(r) && matchKind(r, kind)).length;
-    }
-    for (const btn of shelfButtons) {
-      const shelf = btn.dataset.shelf;
-      const on = state.shelf === shelf;
-      btn.appearance = on ? "filled-outlined" : "outlined";
-      btn.variant = on ? "brand" : "neutral";
-      btn.setAttribute("aria-pressed", String(on));
-      btn.querySelector("[data-shelf-count]").textContent = rows.filter(
-        (r) => matchQ(r, ws) && matchKind(r, state.kind) && matchTag(r) && r.dataset.shelf === shelf,
-      ).length;
-    }
+    const count = (attr, key, matchOthers, matchChoice) => {
+      for (const el of root.querySelectorAll(`[${attr}]`)) {
+        const choice = el.dataset[key];
+        el.textContent = rows.filter((r) => matchQ(r, ws) && matchTag(r) && matchOthers(r) && matchChoice(r, choice)).length;
+      }
+    };
+    count("data-kind-count", "kindCount", (r) => matchShelf(r, state.shelf), matchKind);
+    count("data-shelf-count", "shelfCount", (r) => matchKind(r, state.kind), matchShelf);
 
     activeEl.replaceChildren();
     if (state.q.trim()) activeEl.append(chip(`“${state.q.trim()}”`, () => update({ q: "" }, true)));
@@ -102,6 +96,7 @@ if (root) {
     Object.assign(state, changes);
     if (resetSearchField) search.value = state.q;
     if ("kind" in changes) kindGroup.value = state.kind;
+    if ("shelf" in changes) shelfGroup.value = state.shelf;
     if ("sort" in changes) sortRows();
     render();
   }
@@ -112,9 +107,7 @@ if (root) {
   search.addEventListener("wa-clear", () => update({ q: "" }));
   kindGroup.addEventListener("change", () => update({ kind: kindGroup.value }));
   sortSelect.addEventListener("change", () => update({ sort: sortSelect.value }));
-  for (const btn of shelfButtons) {
-    btn.addEventListener("click", () => update({ shelf: state.shelf === btn.dataset.shelf ? "" : btn.dataset.shelf }));
-  }
+  shelfGroup.addEventListener("change", () => update({ shelf: shelfGroup.value }));
   clearBtn.addEventListener("click", clearAll);
   root.querySelector("[data-clear-empty]").addEventListener("click", clearAll);
 
@@ -126,7 +119,8 @@ if (root) {
     event.preventDefault();
     if (tagLink) update({ tag: tagLink.dataset.tagLink });
     else update({ shelf: shelfLink.dataset.shelfLink });
-    root.scrollIntoView({ behavior: "smooth", block: "start" });
+    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    root.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
   });
 
   // "/" jumps to the search field from anywhere on the page.
@@ -138,9 +132,10 @@ if (root) {
     search.focus();
   });
 
-  root.querySelector("[data-controls]").hidden = false;
+  for (const el of root.querySelectorAll("[data-js-only]")) el.hidden = false;
   search.value = state.q;
   kindGroup.value = state.kind;
+  shelfGroup.value = state.shelf;
   sortSelect.value = state.sort;
   if (state.sort !== "new") sortRows();
   render();

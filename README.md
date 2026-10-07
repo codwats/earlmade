@@ -11,6 +11,7 @@ export WEBAWESOME_NPM_TOKEN=…
 npm install
 npm start        # dev server, plus the private /inbox/ page
 npm run build    # static site in _site/
+npm test         # builds once, checks the output, then drives it in Chromium (CHROMIUM_PATH, default /usr/bin/chromium)
 ```
 
 ## Adding things

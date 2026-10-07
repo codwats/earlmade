@@ -29,8 +29,12 @@ export default function (eleventyConfig) {
   eleventyConfig.addCollection("items", (api) => {
     const all = api.getFilteredByGlob(CONTENT_GLOB);
     // Hand-kept lists drift into duplicates; flag them at build time.
+    // An item on a shelf missing from site.shelves gets no shelf filter, so warn too.
     const seen = new Map();
     for (const item of all) {
+      const { shelf, site } = item.data;
+      if (shelf && !site.shelves.includes(shelf))
+        console.warn(`[earlmade] Unknown shelf "${shelf}" in ${item.inputPath}; add it to site.shelves in src/_data/site.js`);
       const url = item.data.url;
       if (!url) continue;
       if (seen.has(url)) console.warn(`[earlmade] Same URL saved twice: ${seen.get(url)} and ${item.inputPath}`);
