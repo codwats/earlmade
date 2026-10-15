@@ -824,6 +824,17 @@ wa-page[view="mobile"] .toc {
   text-align: start;
   white-space: normal;
 }
+.links-kickstarter {
+  --flank-size: 7rem;
+}
+.links-kickstarter img {
+  width: 100%;
+  height: auto;
+}
+.links-kickstarter h2,
+.links-kickstarter p {
+  margin: 0;
+}
 .links-handle {
   font-family: var(--wa-font-family-code);
   font-size: var(--wa-font-size-xs);

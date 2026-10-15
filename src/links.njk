@@ -30,32 +30,28 @@ eleventyExcludeFromCollections: true
     </nav>
 
     <wa-divider></wa-divider>
-<div class="wa-flank>
-        <div class="flank__media">
-          <!-- Not lazy: this is the first thing under the masthead, so lazy
-               loading it would defer the one image above the fold. -->
-          <img
-            src="https://prismmtg.com/assets/DarkSpiritGuide.svg"
-            alt="The Spirit Guide over a card sleeve, with a mark drawn through one slot of its comb"
-            width="396"
-            height="440"
-          />
-        </div>
-        <div class="flank__body">
-          <h1>The Kickstarter Campaign</h1>
-          <p>
-            The Spirit Guide, the alignment tool this marking system is built around, is on
-            Kickstarter, along with matching sleeves, tokens and playmats. Backing the campaign
-            also includes a lifetime PRISM Membership.
-          </p>
-          <wa-button appearance="accent" variant="brand" href="https://www.kickstarter.com/projects/prismmtg/prism-one-card-every-deck" target="_blank" rel="noopener">
-            <wa-icon slot="start" name="kickstarter" family="brands"></wa-icon>
-            See it on Kickstarter
-          </wa-button>
-        </div>
+    <section class="wa-flank wa-gap-l wa-align-items-center links-kickstarter">
+      <img
+        src="https://prismmtg.com/assets/DarkSpiritGuide.svg"
+        alt="The Spirit Guide over a card sleeve, with a mark drawn through one slot of its comb"
+        width="396"
+        height="440"
+      />
+      <div class="wa-stack wa-gap-s">
+        <h2 class="wa-heading-m">The Kickstarter Campaign</h2>
+        <p class="wa-body-s">
+          The Spirit Guide, the alignment tool this marking system is built around, is on
+          Kickstarter, along with matching sleeves, tokens and playmats. Backing the campaign
+          also includes a lifetime PRISM Membership.
+        </p>
+        <wa-button appearance="accent" variant="brand" href="https://www.kickstarter.com/projects/prismmtg/prism-one-card-every-deck" target="_blank" rel="noopener">
+          <wa-icon slot="start" name="kickstarter" family="brands"></wa-icon>
+          See it on Kickstarter
+        </wa-button>
       </div>
+    </section>
 
- <wa-divider></wa-divider>
+    <wa-divider></wa-divider>
 
     <nav class="wa-stack wa-gap-s" aria-label="On this site">
       <wa-button href="/" appearance="plain" class="links-button">
