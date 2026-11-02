@@ -799,7 +799,7 @@ wa-page[view="mobile"] .toc {
 .links-wrap {
   position: relative;
   box-sizing: border-box;
-  width: min(100%, 28rem);
+  width: min(100%, 34.375rem);
   margin-inline: auto;
   padding: var(--wa-space-4xl) var(--wa-space-l);
 }
@@ -825,11 +825,7 @@ wa-page[view="mobile"] .toc {
   white-space: normal;
 }
 .links-kickstarter {
-  --flank-size: 7rem;
-}
-.links-kickstarter img {
-  width: 100%;
-  height: auto;
+  --flank-size: 220px;
 }
 .links-kickstarter h2,
 .links-kickstarter p {
